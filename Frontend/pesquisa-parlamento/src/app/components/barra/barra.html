@@ -1,0 +1,38 @@
+<mat-toolbar class="navbar">
+  <div class="navbar-container">
+    <!-- Logo e Título -->
+    <div class="logo-section">
+      <button mat-icon-button class="menu-mobile-btn" (click)="abrirFecharMenu()" aria-label="Menu">
+        <mat-icon>menu</mat-icon>
+      </button>
+
+      <a href="/" class="logo-link">
+        <span class="logo-text">Democrac_IA</span>
+      </a>
+    </div>
+
+    <!-- Menu Desktop -->
+    <nav class="nav-links">
+      <a href="/info/como-funciona" class="nav-item" rel="noopener">
+        <span>⚙️ Como Funciona</span>
+      </a>
+      <a href="/info/como-usar" class="nav-item" rel="noopener">
+        <span>❓ Como Usar</span>
+      </a>
+    </nav>
+  </div>
+</mat-toolbar>
+
+<!-- Menu Mobile -->
+<div class="mobile-menu" [class.mobile-menu-open]="menuAberto">
+  <nav class="mobile-nav">
+    <a href="/info/como-funciona" class="mobile-nav-item" rel="noopener">
+      <mat-icon>help_outline</mat-icon>
+      <span>Como Funciona</span>
+    </a>
+    <a href="/info/como-usar" class="mobile-nav-item" rel="noopener">
+      <mat-icon>style</mat-icon>
+      <span>Como Usar</span>
+    </a>
+  </nav>
+</div>

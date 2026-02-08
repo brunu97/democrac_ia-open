@@ -1,0 +1,172 @@
+// vars
+$primary-color: #0a725c;
+$primary-dark: #085d4a;
+$accent-color: #9c0000;
+$text-light: #ffffff;
+$shadow-color: rgba(0, 0, 0, 0.15);
+$transition-speed: 0.3s;
+
+// Navbar Principal
+.navbar {
+  background: linear-gradient(135deg, $primary-color 0%, $primary-dark 100%);
+  box-shadow: 0 2px 12px $shadow-color;
+  height: 76px;
+  padding: 0 !important;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.navbar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px;
+  width: 100%;
+}
+
+// Logo
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.menu-mobile-btn {
+  color: $text-light;
+  display: none;
+  
+  @media (max-width: 768px) {
+    display: flex;
+  }
+}
+
+.logo-link {
+  text-decoration: none;
+}
+
+.logo-text {
+  font-size: 28px;
+  font-weight: 600;
+  color: $text-light;
+  letter-spacing: 0.5px;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 3px;
+    background: $accent-color;
+    transition: width $transition-speed ease;
+  }
+
+  &:hover::after {
+    width: 100%;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 22px;
+  }
+}
+
+// Botões Desktop
+.nav-links {
+  display: flex;
+  gap: 8px;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  color: $text-light;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all $transition-speed ease;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+  }
+}
+
+.nav-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+// Menu telemovel
+.mobile-menu {
+  width: 100%;
+  max-height: 0;
+  overflow: hidden;
+  background: linear-gradient(180deg, $primary-color 0%, $primary-dark 100%);
+  box-shadow: 0 4px 12px $shadow-color;
+  transition: max-height $transition-speed ease;
+
+  @media (min-width: 769px) {
+    display: none;
+  }
+}
+
+.mobile-menu-open {
+  max-height: 500px;
+}
+
+.mobile-nav {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 0;
+}
+
+.mobile-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 24px;
+  color: $text-light;
+  text-decoration: none;
+  font-weight: 500;
+  border-left: 3px solid transparent;
+  transition: background-color $transition-speed ease;
+
+  mat-icon {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+  }
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-left-color: $accent-color;
+  }
+}
+
+// Responsividade
+@media (max-width: 480px) {
+  .navbar-container {
+    padding: 0 16px;
+  }
+
+  .logo-text {
+    font-size: 20px;
+  }
+
+  .mobile-nav-item {
+    padding: 14px 20px;
+    font-size: 14px;
+  }
+}

@@ -1,0 +1,31 @@
+@use '@angular/material' as mat;
+
+html {
+  height: 100%;
+  @include mat.theme((
+    color: (
+      primary: mat.$azure-palette,
+      tertiary: mat.$green-palette,
+      theme-type: dark,            
+    ),
+    typography: Arial,
+    density: 0,
+  ));
+}
+
+body {
+  color-scheme: dark;
+  background-color: #0a0f1d; 
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-body-medium);
+  margin: 0;
+  height: 100%;
+}
+
+
+:root {
+  --mdc-outlined-text-field-outline-color: rgba(255, 255, 255, 0.3);
+  --mdc-outlined-text-field-label-text-color: rgba(255, 255, 255, 0.7);
+  --mdc-outlined-text-field-hover-outline-color: rgba(255, 255, 255, 0.5);
+}
+

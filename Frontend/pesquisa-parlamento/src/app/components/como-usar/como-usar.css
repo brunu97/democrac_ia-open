@@ -1,0 +1,118 @@
+/* como-usar.css */
+
+.guia-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1rem;
+  font-family: Arial, sans-serif;
+  color: #333;
+  line-height: 1.5;
+}
+
+.topo-titulo {
+    text-align: center;
+    margin-bottom: 50px;
+    color: white;
+}
+
+.topo-titulo h1 {
+  margin: 0;
+  font-size: 4rem;
+}
+
+
+.secao {
+  margin-bottom: 2rem;
+}
+
+.secao h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #ffffff;
+  border-bottom: 2px solid #93b0c4;
+  padding-bottom: 0.5rem;
+}
+
+.cartao {
+  background: #0f172a; 
+  color: #e2e8f0; 
+  border-radius: 4px;
+  padding: 2rem;
+  margin-bottom: 1rem;
+  border-radius: 20px;
+}
+
+.cartao h3 {
+  margin-top: 0;
+  color: #ffffff;
+  font-weight: bolder;
+}
+
+ul {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+
+li {
+  margin-bottom: 0.5rem;
+}
+
+.bom {
+  padding: 0.5rem;
+  border-left: 4px solid #4caf50;
+}
+
+.mau {
+  padding: 0.5rem;
+  border-left: 4px solid #f44336;
+}
+
+.fonte-card {
+    background: #1e293b !important; 
+    color: #cbd5e1 !important;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    margin-bottom: 15px;
+}
+
+.font-link {
+    color: #60a5fa;
+    font-weight: 600;
+}
+
+.fonte-header {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+
+.fonte-rank {
+    background: #4ba259;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 1.5em;
+}
+
+.fonte-score {
+    color: #1e40af;
+    font-weight: 600;
+    background: #dbeafe;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 0.9em;
+}
+
+
+.fonte-content {
+    margin: 15px 0;
+    line-height: 1.6;
+}
+
+.titulo {
+  color: #667eea;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 1.2rem;
+}

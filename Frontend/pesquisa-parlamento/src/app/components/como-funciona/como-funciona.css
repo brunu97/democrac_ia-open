@@ -1,0 +1,68 @@
+/* como-usar.css */
+
+.guia-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1rem;
+  font-family: Arial, sans-serif;
+  color: #333;
+  line-height: 1.5;
+}
+
+.topo-titulo {
+    text-align: center;
+    margin-bottom: 50px;
+    color: white;
+}
+
+.topo-titulo h1 {
+  margin: 0;
+  font-size: 4rem;
+}
+
+
+.secao {
+  margin-bottom: 2rem;
+}
+
+.secao h2 {
+  font-size: 1.7rem;
+  margin-bottom: 1rem;
+  color: #ffffff;
+  border-bottom: 2px solid #93b0c4;
+  padding-bottom: 0.5rem;
+}
+
+.cartao {
+  background: #0f172a; 
+  color: #e2e8f0; 
+  border-radius: 4px;
+  padding: 2rem;
+  margin-bottom: 1rem;
+  border-radius: 20px;
+}
+
+.cartao h3 {
+  margin-top: 0;
+  font-size: 1.3rem;
+  color: #dcdcee;
+}
+
+ul {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+
+li {
+  margin-bottom: 0.5rem;
+}
+
+p {
+  font-size: 15px;
+}
+
+img {
+  background-color: white;
+  padding: 5px;
+  border-radius: 15px;
+}

@@ -1,0 +1,300 @@
+<div class="base">
+  <div class="header">
+    <h1>Democrac_IA</h1>
+    <p class="subtitle">O Parlamento em IA</p>
+  </div>
+
+  @if (estado$ | async; as estado) {
+    <div class="pesquisa">
+      <div class="pergunta">
+        <mat-form-field appearance="outline">
+          <mat-label>Pergunta</mat-label>
+          <input
+            matInput
+            maxlength="256"
+            [(ngModel)]="pergunta"
+            minlength="10"
+            (keyup.enter)="fazerPesquisa()"
+            [disabled]="estado.loading || modoSelecionado === ModoPesquisa.DEPUTADO"
+          />
+          <mat-hint align="end">{{ pergunta.length }} / 256</mat-hint>
+          @if (pergunta.length > 0 && pergunta.length < 10) {
+            <mat-error>A pergunta deve ter no mínimo 10 caracteres.</mat-error>
+          }
+        </mat-form-field>
+        <button
+          mat-flat-button
+          class="botao-pesquisar"
+          (click)="fazerPesquisa()"
+          [disabled]="
+            estado.loading || pergunta.length < 10 || modoSelecionado === ModoPesquisa.DEPUTADO
+          "
+        >
+          {{ estado.loading ? 'A pesquisar...' : 'Pesquisar' }}
+        </button>
+      </div>
+      <div class="chips-modo">
+        <mat-chip-set>
+          <mat-chip-option
+            [selectable]="modoSelecionado !== ModoPesquisa.PESQUISA"
+            [selected]="modoSelecionado === ModoPesquisa.PESQUISA"
+            (click)="selecionarModo(ModoPesquisa.PESQUISA)"
+            >Pesquisa</mat-chip-option
+          >
+          <mat-chip-option
+            [selectable]="modoSelecionado !== ModoPesquisa.EXPLICATIVO"
+            [selected]="modoSelecionado === ModoPesquisa.EXPLICATIVO"
+            (click)="selecionarModo(ModoPesquisa.EXPLICATIVO)"
+            >Explicativo</mat-chip-option
+          >
+          <mat-chip-option
+            [selectable]="modoSelecionado !== ModoPesquisa.IMAGINATIVO"
+            [selected]="modoSelecionado === ModoPesquisa.IMAGINATIVO"
+            (click)="selecionarModo(ModoPesquisa.IMAGINATIVO)"
+            >Imaginativo</mat-chip-option
+          >
+          <mat-chip-option
+            [selectable]="modoSelecionado !== ModoPesquisa.SIMPLES"
+            [selected]="modoSelecionado === ModoPesquisa.SIMPLES"
+            (click)="selecionarModo(ModoPesquisa.SIMPLES)"
+            >Simples</mat-chip-option
+          >
+          <mat-chip-option
+            [selectable]="modoSelecionado !== ModoPesquisa.DEPUTADO"
+            [selected]="modoSelecionado === ModoPesquisa.DEPUTADO"
+            (click)="selecionarModo(ModoPesquisa.DEPUTADO)"
+            >Deputado/a</mat-chip-option
+          >
+        </mat-chip-set>
+      </div>
+
+      @if (modoSelecionado === ModoPesquisa.PESQUISA) {
+        <p>
+          Respostas objetivas e factuais, baseadas exclusivamente no que foi dito nos debates e em
+          evidências presentes nos documentos. Ideal para consultas rápidas, com uma análise
+          resumida.
+        </p>
+      }
+
+      @if (modoSelecionado === ModoPesquisa.EXPLICATIVO) {
+        <p>
+          Ideal para uma análise rigorosa e fundamentada em evidências, que explica e contextualiza
+          os factos através dos documentos encontrados, oferecendo uma perspetiva detalhada sobre o
+          tema com base no espectro político dos partidos
+        </p>
+      }
+
+      @if (modoSelecionado === ModoPesquisa.IMAGINATIVO) {
+        <p>
+          Permite a IA entrar em "delírios" e explorar cenários hipotéticos e consequências a partir
+          dos factos documentados. Ideal para reflexões sobre "e se...?".
+          <b>Este modo não deve ser levado a sério</b> é apenas para experiências.
+        </p>
+      }
+
+      @if (modoSelecionado === ModoPesquisa.SIMPLES) {
+        <p>
+          Não utiliza a IA para responder, apenas apresenta fontes sobre a pesquisa, ideal para
+          procurar citações ou referências diretamente nos documentos.
+        </p>
+      }
+
+      @if (modoSelecionado != ModoPesquisa.DEPUTADO) {
+        <mat-expansion-panel class="painel-anos" appearance="outlined">
+          <mat-expansion-panel-header>
+            <mat-panel-title> Filtrar por Anos </mat-panel-title>
+            <mat-panel-description>
+              {{ mostraSelecionados() }}
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+
+          <mat-chip-listbox
+            #chipList
+            selectable
+            multiple
+            [value]="anosSelecionados"
+            (change)="onAnoChange($event)"
+          >
+            @for (ano of anos; track ano) {
+              <mat-chip-option [value]="ano">
+                {{ ano }}
+              </mat-chip-option>
+            }
+          </mat-chip-listbox>
+          <button
+            mat-button
+            color="warn"
+            (click)="limparSelecao(chipList)"
+            [disabled]="anosSelecionados.length === 0"
+          >
+            <mat-icon>delete_sweep</mat-icon>
+            Limpar Seleção
+          </button>
+          <p>Se não houver um ano selecionado, será assumido todos os anos</p>
+        </mat-expansion-panel>
+      }
+
+      <!-- Pesquisa do que cada um disse por nome -->
+      @if (modoSelecionado === ModoPesquisa.DEPUTADO) {
+        <p>
+          Não utiliza IA para responder, apenas lista todos os deputados que constam nos documentos
+          e todas as suas intervenções. Todos os dados aqui apresentados são crus e não têm qualquer
+          tipo de tratamento, formatação ou correção de erros.
+        </p>
+        <p>
+          É possível que certas intervenções tragam juntas outras intervenções de diferentes
+          deputados. Nestes casos, ao ler o texto, é importante usar o arquivo como fonte para
+          garantir uma boa compreensão do que foi dito.
+        </p>
+        <p>
+          Se existirem deputados com o mesmo nome, serão distinguidos pelo partido na tabela. Alguns
+          nomes de partidos contêm erros de escrita, que também se encontram nos documentos.
+        </p>
+
+        <mat-form-field appearance="outline" class="deputados-lista">
+          <mat-label>Nome</mat-label>
+          <input
+            [disabled]="estado.loading"
+            type="text"
+            placeholder="..."
+            aria-label="Nome"
+            matInput
+            [matAutocomplete]="auto"
+            (input)="filtrarDeputados($event)"
+          />
+          <mat-autocomplete
+            autoActiveFirstOption
+            #auto="matAutocomplete"
+            (optionSelected)="onDeputadoSelecionado($event)"
+          >
+            @for (deputado of deputadosFiltrados; track deputado) {
+              <mat-option [value]="deputado.nome">{{ deputado.nome }}</mat-option>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
+      }
+    </div>
+
+    <!-- Erro -->
+    @if (estado.erro && !estado.loading) {
+      <div class="area-resposta erro-box">
+        <p>⚠️ {{ estado.erro }}</p>
+      </div>
+    }
+
+    <!-- Loading -->
+    @if (estado.loading) {
+      <div class="area-resposta">
+        <div class="spinner"></div>
+        <p style="text-align: center; font-size: larger">💿 A processar a resposta...</p>
+      </div>
+    }
+
+    <!-- Resposta -->
+    @if (estado.resposta && !estado.loading) {
+      <div class="area-resposta">
+        <div class="pergunta-a-resposta">
+          @if (estado.resposta.modo === ModoPesquisa.PESQUISA) {
+            <p><b>🔍 Modo Pesquisa</b></p>
+          }
+          @if (estado.resposta.modo === ModoPesquisa.EXPLICATIVO) {
+            <p><b>📚 Modo Explicativo</b></p>
+          }
+          @if (estado.resposta.modo === ModoPesquisa.IMAGINATIVO) {
+            <p><b>💭 Modo Imaginativo</b></p>
+          }
+          @if (estado.resposta.modo === ModoPesquisa.SIMPLES) {
+            <p><b>📌 Modo Simples</b></p>
+          }
+          @if (estado.resposta.anos.length > 0) {
+            <p>Em {{ estado.resposta.anos.join(', ') }}</p>
+          }
+          <p>{{ estado.resposta.pergunta }}</p>
+        </div>
+
+        <!-- Resposta gerada pela IA -->
+        <div class="resposta" [innerHTML]="estado.resposta.resposta | markdown"></div>
+
+        <!-- Fontes -->
+        @if (estado.resposta.fontes && estado.resposta.fontes.length > 0) {
+          <div class="fontes">
+            <h4>Fontes:</h4>
+            @for (fonte of estado.resposta.fontes; track $index) {
+              <mat-card class="fonte-card">
+                <mat-card-content>
+                  <div class="fonte-header">
+                    <span class="fonte-rank">#{{ fonte.rank }}</span>
+                    <a
+                      class="font-link"
+                      [href]="gerarLink(fonte.path) + '/' + fonte.page"
+                      target="_blank"
+                    >
+                      🔗 {{ obtemDataFonte(fonte.source) }}
+                    </a>
+                    <span>Página {{ fonte.page }}</span>
+                  </div>
+                  <div class="fonte-content">{{ fonte.content }}</div>
+                </mat-card-content>
+              </mat-card>
+            }
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Tabela dos deputados -->
+    @if (estado.tabela && !estado.loading) {
+      <div class="area-tabela">
+        <h1>Intervenções de {{ deputadoSelecinado }}</h1>
+        <p>Total: {{ estado.tabela.total }} intervenções</p>
+
+        <table class="tabela-deputado">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Partido</th>
+              <th>Arquivo</th>
+              <th>Texto</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of estado.tabela.dados; track $index) {
+              <tr>
+                <td>{{ item.nome }}</td>
+                <td>{{ item.partido }}</td>
+                <td>
+                  <a
+                    class="font-link"
+                    [href]="gerarLink(item.ficheiro) + '/' + item.pagina"
+                    target="_blank"
+                  >
+                    🔗 {{ obtemDataFonte(item.ficheiro) }}
+                  </a>
+                </td>
+                <td>{{ item.texto }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+
+        <div class="paginacao">
+          <button mat-button (click)="paginaAnterior()" [disabled]="estado.tabela.offset === 0">
+            <mat-icon>chevron_left</mat-icon>
+            Anterior
+          </button>
+
+          <span class="info-paginacao">
+            {{ estado.tabela.offset + 1 }} -
+            {{ estado.tabela.offset + estado.tabela.dados.length }} de
+            {{ estado.tabela.total }}
+          </span>
+
+          <button mat-button (click)="proximaPagina()" [disabled]="!estado.tabela.tem_mais_paginas">
+            Próxima
+            <mat-icon>chevron_right</mat-icon>
+          </button>
+        </div>
+      </div>
+    }
+  }
+</div>

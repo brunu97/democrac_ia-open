@@ -1,0 +1,63 @@
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+
+  /* fundo principal */
+
+  position: relative;
+  overflow-x: hidden;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    #1f2d4e 0%,
+    #1f2d4d 50%,
+    #0f172a 100%
+  );
+  z-index: -2;
+  pointer-events: none;
+}
+
+/* marca d’água no fundo */
+/* imagem de fundo com fade 360º */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+
+  background-image:
+    /* fade vertical */
+    linear-gradient(
+      to bottom,
+      rgba(255,255,255,1) 0%,
+      rgba(255,255,255,0) 18%,
+      rgba(255,255,255,0) 82%,
+      rgba(255,255,255,1) 100%
+    ),
+    /* fade horizontal */
+    linear-gradient(
+      to right,
+      rgba(255,255,255,1) 0%,
+      rgba(255,255,255,0) 18%,
+      rgba(255,255,255,0) 82%,
+      rgba(255,255,255,1) 100%
+    ),
+    url("/fundo.JPG");
+
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+
+  filter: grayscale(100%);
+  opacity: 0.02;
+
+  pointer-events: none;
+}
