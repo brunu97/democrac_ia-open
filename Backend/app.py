@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from config import PesquisaRequest
+from config import RESPOSTA_MODEL, PesquisaRequest
 import pesquisar
 
 app = Flask(__name__)
@@ -15,6 +15,7 @@ CORS(app, resources={
     }
 })
 
+print("modelo: " + str(RESPOSTA_MODEL))
 print("=== Carrega Dados ===")
 if not pesquisa_core.carrega_dados():
     print("Falha ao carregar dados!")
@@ -31,12 +32,16 @@ def api_pesquisa():
         
         resposta = "Pesquisa realizada com sucesso."
         
-        # Realizar pesquisa
-        resultados = pesquisa_core.pesquisa(req_pesquisa.query, req_pesquisa.modo, req_pesquisa.anos)
-        
-        # Gerar resposta
-        if not req_pesquisa.modo == 'simples':
-            resposta = pesquisa_core.gera_resposta(req_pesquisa.query, resultados, req_pesquisa.modo)
+        if not req_pesquisa.modo == "constituicao":
+            # Realizar pesquisa
+            resultados = pesquisa_core.pesquisa(req_pesquisa.query, req_pesquisa.modo, req_pesquisa.anos)
+            
+            # Gerar resposta
+            if not req_pesquisa.modo == 'simples':
+                resposta = pesquisa_core.gera_resposta(req_pesquisa.query, resultados, req_pesquisa.modo)
+        else:
+            # Realizar pesquisa e resposta
+            resultados, resposta = pesquisa_core.pesquisa_constituicao(req_pesquisa.query)
 
         return jsonify({
             'resposta': resposta,
@@ -63,6 +68,7 @@ def get_tabela():
         
         nome = data.get('nome')
         offset = data.get('offset', 0)
+        texto = data.get('texto')
         
         if not nome or not isinstance(nome, str) or len(nome) > 200:
             return jsonify({'error': 'Nome inválido'}), 400
@@ -70,7 +76,7 @@ def get_tabela():
         if not isinstance(offset, int) or offset < 0:
             offset = 0
         
-        resultado = pesquisa_core.get_deputado(nome, offset)
+        resultado = pesquisa_core.get_deputado(nome, offset, texto)
         return jsonify(resultado), 200
         
     except Exception as e:

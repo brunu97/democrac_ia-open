@@ -43,6 +43,7 @@ export class Pesquisa {
   deputadosLista: any[] = [];
   deputadosFiltrados: any[] = [];
   deputadoSelecinado: string = '';
+  filtroTexto: string = '';
 
   off_set_atual = 0;
   pagina_tamanho = 15;
@@ -76,7 +77,7 @@ export class Pesquisa {
       next: (res: PesquisaResultado) => {
         res.pergunta = this.pergunta;
         res.modo = this.modoSelecionado;
-        res.anos = this.anosSelecionados
+        res.anos = this.anosSelecionados;
         this.pergunta = '';
         this.atualizarEstado({ loading: false, resposta: res });
       },
@@ -138,6 +139,7 @@ export class Pesquisa {
     let pesquisa: TabelaRequest = {
       nome: nome,
       offset: offset,
+      ...(this.filtroTexto ? { texto: this.filtroTexto } : {}),
     };
 
     this.pesquisaService.get_tabela(pesquisa).subscribe({
@@ -153,6 +155,12 @@ export class Pesquisa {
         });
       },
     });
+  }
+
+  pesquisarTexto() {
+    if (this.deputadoSelecinado) {
+      this.obtemTabela(this.deputadoSelecinado, 0);
+    }
   }
 
   proximaPagina() {
@@ -181,5 +189,19 @@ export class Pesquisa {
     this.deputadosFiltrados = this.deputadosLista.filter((d) =>
       d.nome.toLowerCase().includes(valor),
     );
+  }
+
+  primeiraPagina() {
+    if (this.deputadoSelecinado && this.temAnterior) {
+      this.obtemTabela(this.deputadoSelecinado, 0);
+    }
+  }
+
+  ultimaPagina() {
+    if (this.deputadoSelecinado && this.temProxima) {
+      const ultimaOffset = Math.floor((this.dadosTotais - 1) / this.pagina_tamanho) * this.pagina_tamanho;
+
+      this.obtemTabela(this.deputadoSelecinado, ultimaOffset);
+    }
   }
 }

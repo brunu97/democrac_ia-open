@@ -16,6 +16,7 @@ export interface PesquisaRequest {
 export interface TabelaRequest {
   nome: string;
   offset: number;
+  texto?: string;
 }
 
 export interface Fontes {
@@ -27,5 +28,6 @@ export enum ModoPesquisa {
   EXPLICATIVO = 'explicativo',
   IMAGINATIVO = 'imaginativo',
   SIMPLES = 'simples',
-  DEPUTADO = 'deputado'
+  DEPUTADO = 'deputado',
+  CONSTITUICAO = 'constituicao'
 }

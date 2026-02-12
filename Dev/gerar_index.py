@@ -23,18 +23,19 @@ def limpar_texto(text):
     if not text:
         return ""
 
-    # Remove números das página
+    # 1. Remover números de página soltos no início/fim das linhas (comum em cabeçalhos/rodapés)
     lines = text.split('\n')
     cleaned_lines = []
     for i, line in enumerate(lines):
         s = line.strip()
+        # Ignora se for apenas dígitos (até 3 caracteres) nas primeiras ou últimas 5 linhas
         if s.isdigit() and len(s) <= 3 and (i < 5 or i > len(lines) - 5):
             continue
         cleaned_lines.append(line)
     
     text = '\n'.join(cleaned_lines)
 
-    # Unir linhas que foram partidas no meio de um paragrafo por alguma razão no ficheiro
+    # 2. Unir linhas que foram partidas no meio de um paragrafo por alguma razão no ficheiro
     lines = text.split('\n')
     result = []
     buf = []
@@ -47,7 +48,7 @@ def limpar_texto(text):
                 paragraph = ' '.join(buf).replace('- ', '')
                 result.append(paragraph)
                 buf = []
-            result.append('')
+            result.append('') # Mantém o separador de parágrafo
         else:
             buf.append(s)
             
@@ -57,7 +58,8 @@ def limpar_texto(text):
 
     text = '\n'.join(result)
 
-    # Remove espaços horizontais duplicados
+    # 3. Normalização Final
+    # Remove espaços horizontais duplicados (mas mantém quebras de linha simples/duplas)
     text = re.sub(r'[^\S\n]+', ' ', text)
     # Garante que não existam mais de duas quebras de linha seguidas
     text = re.sub(r'\n{3,}', '\n\n', text)

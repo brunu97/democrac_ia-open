@@ -1,0 +1,7 @@
+Para criar os dados, fazer isto por ordem
+- Dev/gerar_index.py
+- Dev/extrador_dialogos.py
+- Dev/gerar_index_constituicao.py
+
+
+o ficheiro python precisa de ter a BD ao lado

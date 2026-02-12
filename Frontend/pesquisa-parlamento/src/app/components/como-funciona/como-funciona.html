@@ -11,7 +11,7 @@
         Assembleia da República desde <b>Dezembro de 2006 até Janeiro de 2026</b>.
       </p>
       <p>
-        Graças ao tabalho árduo das pessoas que fazem de transcrição e organização dos documentos
+        Graças ao trabalho árduo das pessoas que fazem de transcrição e organização dos documentos
         parlamentares, que podes encontrar aqui
         <a href="https://debates.parlamento.pt/" target="_blank" rel="noopener">parlamento.pt</a>, o
         Democrac_IA tem acesso a uma vasta coleção de textos. Que foram todos transferidos para
@@ -19,11 +19,11 @@
       </p>
       <p>
         O Democrac_IA NÃO faz pedidos diretos ao servidor do parlamento para obter informações. Em
-        vez disso, usa uma cópia local no proprio servidor do Democrac_IA dos documentos que foram
+        vez disso, usa uma cópia local no próprio servidor do Democrac_IA dos documentos que foram
         processados e organizados antecipadamente.
       </p>
       <p>
-        Em teoria esta aplicação poderia usar documentos desde 1821 mas devido a limatações tecnicas
+        Em teoria esta aplicação poderia usar documentos desde 1821 mas devido a limitações técnicas
         é focada em dados mais recentes e isto ajuda-te a encontrar respostas sobre o que os
         deputados dizem, votam e discutem.
       </p>
@@ -76,7 +76,7 @@
     <div class="cartao">
       <h3>Queres mesmo saber o que realmente se passa aqui?</h3>
       <p>
-        Primeiro de tudo, tudo isto é codigo aberto! o backend e o frontend, vai aqui, podes fazer o
+        Primeiro de tudo, tudo isto é código aberto! O backend e o frontend, vai aqui, podes fazer o
         que quiseres, podes copiar, expandir, tanto faz
         <u
           ><a href="https://github.com/brunu97/democrac_ia-open" target="_blank" rel="noopener"
@@ -85,7 +85,7 @@
         >
       </p>
       <p>
-        O código não está perfeito, e certamente há pontos onde é possivel melhorar, se tens alguma
+        O código não está perfeito, e certamente há pontos onde é possível melhorar, se tens alguma
         sugestão, envia
         <a
           target="_blank"
@@ -96,8 +96,8 @@
       </p>
 
       <p>
-        Primeiro vamos á maneria como o site funciona e de seguida á forma como os dados foram
-        indexados
+        Primeiro vamos à maneira como o site funciona e de seguida à forma como os dados foram
+        indexados.
       </p>
       <p>
         A Pesquisa no site de forma resumida num diagrama funciona assim, é essencialmente um
@@ -116,8 +116,8 @@
       />
       <br />
       <p>
-        Toda a backend é feita em Python usando Flask, Python é ideial tudo o que é IA e ML, há
-        exelentes modulos para se usar.
+        Toda a backend é feita em Python usando Flask, Python é ideal para tudo o que é IA e ML, há
+        excelentes módulos para se usar.
       </p>
       <p>
         Um dos módulos utilizados é o SentenceTransformer, que também é responsável pela geração dos
@@ -130,7 +130,7 @@
         perfeitamente neste requisito e ambos são <b>open source</b>!
       </p>
       <p>
-        Depois de transforar os textos em vetores, estes beep boops podem ir para o FAISS fazer a
+        Depois de transformar os textos em vetores, estes beep boops podem ir para o FAISS fazer a
         pesquisa.
       </p>
       <br />
@@ -139,50 +139,50 @@
       </h3>
       <p>
         Facebook AI Similarity Search ou simplesmente FAISS é uma biblioteca de pesquisa vetorial
-        desenvolvida pela Meta pela equipa do Facebook IA (dai o nome). É usada para encontrar os
+        desenvolvida pela Meta pela equipa do Facebook IA (daí o nome). É usada para encontrar os
         vetores mais semelhantes a um vetor de consulta em uma grande base de dados vetoriais.
       </p>
       <p>
         Não é exatamente uma Inteligência Artificial por si, mas sim uma biblioteca extremamente
-        eficiente a encontrar dados
+        eficiente a encontrar dados.
       </p>
       <p>
         O Resultado do embedding do passo anterior é utilizado aqui para o FAISS procurar dados
-        relevantes
+        relevantes.
       </p>
       <p>
-        FAISS é <b>Open Source</b> e existem outras altenativas, tal como o ChromaDB, no entanto
-        FAISS é incrivelmente rapido e leve e foi a razão de o ter escolhido
+        FAISS é <b>Open Source</b> e existem outras alternativas, tal como o ChromaDB, no entanto
+        FAISS é incrivelmente rápido e leve e foi a razão de o ter escolhido.
       </p>
       <p>
-        Todos os textos estão guardados numa base dados em SQLite, textos estes que são Chunks dos
-        documentos originais que foram indexados
+        Todos os textos estão guardados numa base de dados em SQLite, textos estes que são Chunks
+        dos documentos originais que foram indexados.
       </p>
       <br />
-      <h3><b>A Mágia acontece - LLM com RAG</b></h3>
+      <h3><b>A Magia acontece - LLM com RAG</b></h3>
 
       <p>
-        Depois de se encontrar toda a informação relevante, todo os dados incluindo um conjunto de
-        instruções destinadas ao system prompt da LLM é enviado para esta fase do processo
+        Depois de se encontrar toda a informação relevante, todos os dados incluindo um conjunto de
+        instruções destinadas ao system prompt da LLM são enviados para esta fase do processo.
       </p>
 
       <p>
         O sucesso da resposta depende diretamente da <b>qualidade das fontes</b> utilizadas e do
         <b>system prompt</b> que orienta o comportamento do modelo. O ficheiro de prompts descreve
-        de forma detalhada como a IA deve analisar as fontes e estruturar as suas respostas
+        de forma detalhada como a IA deve analisar as fontes e estruturar as suas respostas.
       </p>
 
       <p>
-        Inicialmente, isto foi desenvolvida com o <b>Ollama</b> a funcionar como servidor local. No
+        Inicialmente, isto foi desenvolvido com o <b>Ollama</b> a funcionar como servidor local. No
         entanto, para um ambiente de produção, o Ollama não é a opção mais adequada. A alternativa é
         o <b>vLLM</b> que é ideal para aplicações web com múltiplos utilizadores, mas o custo é
-        bastante elevado para manter um servidor desses assim
+        bastante elevado para manter um servidor desses assim.
       </p>
 
       <p>
         Por esse motivo esta aplicação recorre ao <b>groq</b> (sem qualquer relação com o Grok do
         X/Twitter). <b>groqCloud</b> É um serviço rápido e económico, o que o torna uma excelente
-        escolha para estes cenários
+        escolha para estes cenários.
       </p>
 
       <p>
@@ -195,30 +195,32 @@
         <b>Mas porquê um modelo tão pequeno?</b> perguntas tu! Bem... hospedar modelos maiores é
         caro 😅, MAS o Qwen 2.5 7B é excelente na comunicação em português de Portugal. Uma
         alternativa viável seria o <b>LLaMA 2 7B</b>, da Meta, mas nos testes realizados o Qwen
-        demonstrou ser significativamente melhor a seguir instruções, qualquer das formas a ideia de
-        usar um servidor dedicado com a vLLM acabou por ser abandonada devido aos custos elevados de
-        manter um servidor dedicado a executar estas LLMs, mesmo sendo modelos bastante eficientes e
-        leves.
+        demonstrou ser significativamente melhor a seguir instruções,
+        <b
+          >de qualquer forma a ideia de usar um servidor dedicado com a vLLM acabou por ser
+          abandonada devido aos custos elevados de manter um servidor dedicado</b
+        >
+        a executar estas LLMs, mesmo sendo modelos bastante eficientes e leves.
       </p>
 
       <p>
         Atualmente, a aplicação realiza a sua inferência diretamente no <b>groqCloud</b>, utilizando
-        o <b>LLaMA 3.1 8B</b> (Qwen 2.5 7B não está disponível no groq) que é barato e rapido. O
-        serviço também suporta o <b>Qwen 3 32B</b>, que poderá vir a ser utilizado no futuro caso
-        seja necessário, mas também existem outros modelos no groq, no entanto, para o contexto
-        desta aplicação, apenas estes dois modelos foram testados.
+        o <b>LLaMA 3.1 8B</b> como principal porque é barato e rápido. O serviço também suporta o
+        <b>Qwen 3 32B</b>, que poderá vir a ser utilizado no futuro caso seja necessário, mas também
+        existem outros modelos no groq e a depender do custo, esta aplicação poderá a começar a usar
+        modelos melhores.
       </p>
 
       <p>
         Todo o frontend é feito em Angular, não haveria nada de mal em utilizar o Flask diretamente
-        com templates para fazer o site, mas Angular é mais facil de gerir
+        com templates para fazer o site, mas Angular é mais fácil de gerir.
       </p>
 
       <h3><b>A Extração de dados</b></h3>
       <img src="diagrama2.png" style="max-width: 100%; height: auto" />
       <p>
         Talvez a parte mais difícil seja a extração dos PDFs dos debates do Parlamento.
-        Inicialmente, a ideia era bem para além de só dos debates, mas como todo o conteúdo que o
+        Inicialmente, a ideia ia bem para além de só dos debates, mas como todo o conteúdo que o
         site tem, desde 1821 (aproveito já para agradecer o trabalho incrível que o pessoal do
         parlamento fez a transcrever tudo isto e ter tudo digitalizado), dificuldades técnicas
         surgiram rapidamente. Não só a resolução de vários ficheiros não é a ideal para um
@@ -234,14 +236,20 @@
         Depois disso estar feito, entra a parte de transformar isto tudo em embeddings usando
         pytorch e o modelo BGE-M3, coisa que felizmente posso acelerar com <b>ROCm</b>. Sendo o meu
         GPU da AMD, uma RX 7800XT, posso usar o GPU para fazer isto mais rápido. Originalmente o
-        processo demorava mais de 10 horas seguidas 😫! mas depois de varias experiências e
-        optimizações de momento demora cerca de uma hora e meia! CUDA seria sempre a opção ideal mas
+        processo demorava mais de 10 horas seguidas 😫! mas depois de várias experiências e
+        otimizações de momento demora cerca de uma hora e meia! CUDA seria sempre a opção ideal mas
         requer GPU NVIDIA.
       </p>
       <p>
-        A estrura de cada PDF é semelhante ao longo dos anos dos documentos, no entanto há algumas
+        A Indexação do pdf da Constituição já foi feito de forma diferente e mais complexa, como é
+        um PDF pequeno não iria ter os problemas de memoria e performance que é indexar os quase
+        2000 pdfs dos debates, portanto a forma como os dados da constituição estão indexados no
+        FAISS tem melhor qualidade e um maior tamanho.
+      </p>
+      <p>
+        A estrutura de cada PDF é semelhante ao longo dos anos dos documentos, no entanto há algumas
         alterações, como por exemplo a lista de presença existe nos mais antigos mas não nos novos,
-        mas a variação entre pdfs não é suficiente para causar ruidos significativos na pesquisa
+        mas a variação entre PDFs não é suficiente para causar ruídos significativos na pesquisa.
       </p>
       <p>Tudo é armazenado na base de dados e indexado no FAISS.</p>
     </div>

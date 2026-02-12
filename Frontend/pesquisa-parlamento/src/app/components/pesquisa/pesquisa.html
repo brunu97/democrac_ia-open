@@ -54,6 +54,13 @@
             >Imaginativo</mat-chip-option
           >
           <mat-chip-option
+            [selectable]="modoSelecionado !== ModoPesquisa.CONSTITUICAO"
+            [selected]="modoSelecionado === ModoPesquisa.CONSTITUICAO"
+            (click)="selecionarModo(ModoPesquisa.CONSTITUICAO)"
+            >Constituição</mat-chip-option
+          >
+          <span class="chip-separator"></span>
+          <mat-chip-option
             [selectable]="modoSelecionado !== ModoPesquisa.SIMPLES"
             [selected]="modoSelecionado === ModoPesquisa.SIMPLES"
             (click)="selecionarModo(ModoPesquisa.SIMPLES)"
@@ -99,7 +106,16 @@
         </p>
       }
 
-      @if (modoSelecionado != ModoPesquisa.DEPUTADO) {
+      @if (modoSelecionado === ModoPesquisa.CONSTITUICAO) {
+        <p>
+          Pesquisa na Constituição da República Portuguesa. Encontra artigos relevantes e explica o
+          seu significado com rigor jurídico.
+        </p>
+      }
+
+      @if (
+        modoSelecionado !== ModoPesquisa.DEPUTADO && modoSelecionado !== ModoPesquisa.CONSTITUICAO
+      ) {
         <mat-expansion-panel class="painel-anos" appearance="outlined">
           <mat-expansion-panel-header>
             <mat-panel-title> Filtrar por Anos </mat-panel-title>
@@ -206,7 +222,10 @@
           @if (estado.resposta.modo === ModoPesquisa.SIMPLES) {
             <p><b>📌 Modo Simples</b></p>
           }
-          @if (estado.resposta.anos.length > 0) {
+          @if (estado.resposta.modo === ModoPesquisa.CONSTITUICAO) {
+            <p><b>📜 Constituição</b></p>
+          }
+          @if (estado.resposta.anos && estado.resposta.anos.length > 0) {
             <p>Em {{ estado.resposta.anos.join(', ') }}</p>
           }
           <p>{{ estado.resposta.pergunta }}</p>
@@ -218,21 +237,36 @@
         <!-- Fontes -->
         @if (estado.resposta.fontes && estado.resposta.fontes.length > 0) {
           <div class="fontes">
-            <h4>Fontes:</h4>
+            <h2>Fontes:</h2>
+            <p>IA pode ter erros, verifica sempre as fontes</p>
             @for (fonte of estado.resposta.fontes; track $index) {
               <mat-card class="fonte-card">
                 <mat-card-content>
-                  <div class="fonte-header">
-                    <span class="fonte-rank">#{{ fonte.rank }}</span>
-                    <a
-                      class="font-link"
-                      [href]="gerarLink(fonte.path) + '/' + fonte.page"
-                      target="_blank"
-                    >
-                      🔗 {{ obtemDataFonte(fonte.source) }}
-                    </a>
-                    <span>Página {{ fonte.page }}</span>
-                  </div>
+                  <!-- Fontes para a Constituição -->
+                  @if (estado.resposta.modo === ModoPesquisa.CONSTITUICAO) {
+                    <div class="fonte-header">
+                      <span class="fonte-rank">#{{ fonte.rank }}</span>
+                      <span
+                        ><b>Artigo {{ fonte.artigo_numero }}º</b> - {{ fonte.artigo_titulo }}</span
+                      >
+                    </div>
+                    @if (fonte.parte) {
+                      <div class="fonte-meta">{{ fonte.parte }} > {{ fonte.titulo_secao }}</div>
+                    }
+                  } @else {
+                    <!-- Fontes Pergunta -->
+                    <div class="fonte-header">
+                      <span class="fonte-rank">#{{ fonte.rank }}</span>
+                      <a
+                        class="font-link"
+                        [href]="gerarLink(fonte.path) + '/' + fonte.page"
+                        target="_blank"
+                      >
+                        🔗 {{ obtemDataFonte(fonte.source) }}
+                      </a>
+                      <span>Página {{ fonte.page }}</span>
+                    </div>
+                  }
                   <div class="fonte-content">{{ fonte.content }}</div>
                 </mat-card-content>
               </mat-card>
@@ -248,12 +282,24 @@
         <h1>Intervenções de {{ deputadoSelecinado }}</h1>
         <p>Total: {{ estado.tabela.total }} intervenções</p>
 
+        <!-- Pesquisa direita no texto -->
+        <div class="filtro-texto" style="display: flex; gap: 8px; margin-bottom: 16px">
+          <mat-form-field appearance="outline" style="flex: 1">
+            <mat-label>Pesquisar no texto</mat-label>
+            <input matInput [(ngModel)]="filtroTexto" (keyup.enter)="pesquisarTexto()" />
+          </mat-form-field>
+          <button mat-flat-button class="botao-pesquisar" (click)="pesquisarTexto()">
+            Filtrar
+          </button>
+        </div>
+
         <table class="tabela-deputado">
           <thead>
             <tr>
               <th>Nome</th>
               <th>Partido</th>
               <th>Arquivo</th>
+              <th>Data</th>
               <th>Texto</th>
             </tr>
           </thead>
@@ -268,9 +314,10 @@
                     [href]="gerarLink(item.ficheiro) + '/' + item.pagina"
                     target="_blank"
                   >
-                    🔗 {{ obtemDataFonte(item.ficheiro) }}
+                    🔗 PDF
                   </a>
                 </td>
+                <td>{{ item.data }}</td>
                 <td>{{ item.texto }}</td>
               </tr>
             }
@@ -278,6 +325,11 @@
         </table>
 
         <div class="paginacao">
+          <button mat-button (click)="primeiraPagina()" [disabled]="!temAnterior">
+            <mat-icon>first_page</mat-icon>
+            Primeira
+          </button>
+
           <button mat-button (click)="paginaAnterior()" [disabled]="estado.tabela.offset === 0">
             <mat-icon>chevron_left</mat-icon>
             Anterior
@@ -292,6 +344,11 @@
           <button mat-button (click)="proximaPagina()" [disabled]="!estado.tabela.tem_mais_paginas">
             Próxima
             <mat-icon>chevron_right</mat-icon>
+          </button>
+
+          <button mat-button (click)="ultimaPagina()" [disabled]="!temProxima">
+            Última
+            <mat-icon>last_page</mat-icon>
           </button>
         </div>
       </div>

@@ -231,3 +231,24 @@ mat-form-field {
 .info-paginacao {
     color: #94a3b8;
 }
+
+.filtro-texto {
+    display: flex;
+    gap: 15px;
+    align-items: flex-start;
+}
+
+.filtro-texto mat-form-field {
+    flex: 1;
+}
+
+
+.chip-separator {  
+  margin: 0 12px; 
+}
+
+@media (max-width: 768px) {
+  .chip-separator {
+    display: none;
+  }
+}

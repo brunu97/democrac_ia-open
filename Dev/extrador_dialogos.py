@@ -9,7 +9,7 @@ PASTA = SCRIPT_DIR / "documentos"
 DB = SCRIPT_DIR / "docs.db"
 
 if not DB.exists():
-    print(f"Base de dados não encontrada: {DB}")
+    print("BD não encontrada!")
     sys.exit(1)
 
 
@@ -23,6 +23,11 @@ RE_ORADOR = re.compile(
 
 def processar_pdf(pdf_path):
     resultados = []
+    
+    # Extrai a data do nome do ficheiro
+    match_data = re.search(r"(\d{4}-\d{2}-\d{2})", pdf_path.name)
+    data_sessao = match_data.group(1) if match_data else None
+
     doc = pymupdf.open(pdf_path)
     
     for num_pag in range(len(doc)):
@@ -50,7 +55,7 @@ def processar_pdf(pdf_path):
             dito = re.sub(r'[ \t]+', ' ', dito) # Normaliza espaços
             
             if dito:
-                resultados.append((nome, partido, dito, pdf_path.name, num_pag + 1))
+                resultados.append((nome, partido, dito, pdf_path.name, num_pag + 1, data_sessao))
     
     doc.close()
     return resultados
@@ -60,13 +65,15 @@ if __name__ == "__main__":
 
     conn.execute("DROP TABLE IF EXISTS intervencoes")
 
+    # Adicionada a coluna data DATE
     conn.execute("""CREATE TABLE intervencoes (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nome TEXT, 
         partido TEXT, 
         texto TEXT, 
         ficheiro TEXT, 
-        pagina INTEGER
+        pagina INTEGER,
+        data DATE
     )""")
     conn.commit()
 
@@ -80,8 +87,9 @@ if __name__ == "__main__":
                               total=len(pdfs), 
                               desc=f"PDFs ({workers}w)"):
             if resultados:
+                # Adicionado mais um ? para a data
                 conn.executemany(
-                    "INSERT INTO intervencoes VALUES (NULL,?,?,?,?,?)", 
+                    "INSERT INTO intervencoes VALUES (NULL,?,?,?,?,?,?)", 
                     resultados
                 )
                 conn.commit()

@@ -3,14 +3,20 @@ import os
 # Configurações
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 VECTOR_PATH = os.path.join(BASE_DIR, "base_dados")
+
+GROQ_KEY = "CHAVE_GROQ"
+
 EMBED_MODEL = "BAAI/bge-m3"
-RESPOSTA_MODEL = "llama-3.1-8b-instant"
-GROQ_KEY = "CHAVE_AQUI"
+MODEL_SIMPLES = "llama-3.1-8b-instant"
+MODEL_AVANCADO = "qwen/qwen3-32b"
+MODEL_AVANCADO_2 = "meta-llama/llama-4-scout-17b-16e-instruct"
+
+RESPOSTA_MODEL = MODEL_SIMPLES
 
 
 
 class PesquisaRequest:
-    MODOS_VALIDOS = {'pesquisa', 'explicativo', 'imaginativo', 'simples'}
+    MODOS_VALIDOS = {'pesquisa', 'explicativo', 'imaginativo', 'simples', 'constituicao'}
 
     def __init__(self, data):
         self.query = data.get('pergunta', '').strip()
