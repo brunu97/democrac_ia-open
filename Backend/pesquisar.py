@@ -3,8 +3,7 @@ import threading
 import faiss
 import sqlite3
 import numpy as np
-#import prompt_avancado as prompt
-import prompt_simples as prompt
+import prompt
 import config
 import re
 from sentence_transformers import SentenceTransformer
@@ -49,35 +48,43 @@ class Pesquisar:
         cursor.execute('''SELECT DISTINCT nome FROM intervencoes ORDER BY nome''')
         return [dict(row) for row in cursor.fetchall()]
 
-    def get_deputado(self, nome, offset=0, texto_filtro=None):
+    def get_deputado(self, nome, offset=0, texto=None, data_inicio=None, data_fim=None):
         cursor = self._get_conn().cursor()
-
-        if texto_filtro:
-            cursor.execute('''
-                SELECT nome, partido, texto, ficheiro, pagina, data
-                FROM intervencoes 
-                WHERE nome = ? AND texto LIKE ?
-                ORDER BY data DESC
-                LIMIT ? OFFSET ?
-            ''', (nome, f'%{texto_filtro}%', 15, offset))
-
-            resultados = [dict(row) for row in cursor.fetchall()]
-
-            cursor.execute('''SELECT COUNT(*) as total FROM intervencoes WHERE nome = ? AND texto LIKE ?''', (nome, f'%{texto_filtro}%'))
-        else:
-            cursor.execute('''
-                SELECT nome, partido, texto, ficheiro, pagina, data
-                FROM intervencoes 
-                WHERE nome = ?
-                ORDER BY data DESC
-                LIMIT ? OFFSET ?
-            ''', (nome, 15, offset))
-
-            resultados = [dict(row) for row in cursor.fetchall()]
-            cursor.execute('''SELECT COUNT(*) as total FROM intervencoes WHERE nome = ?''', (nome,))
-
+        
+        base_query = '''SELECT nome, partido, texto, ficheiro, pagina, data FROM intervencoes  WHERE nome = ?'''
+        count_query = '''SELECT COUNT(*) as total FROM intervencoes WHERE nome = ?'''
+        
+        params = [nome]
+        
+        # Adicionar filtro de texto
+        if texto:
+            base_query += ' AND texto LIKE ?'
+            count_query += ' AND texto LIKE ?'
+            params.append(f'%{texto}%')
+        
+        # Adicionar filtro de data início
+        if data_inicio:
+            base_query += ' AND data >= ?'
+            count_query += ' AND data >= ?'
+            params.append(data_inicio)
+        
+        # Adicionar filtro de data fim
+        if data_fim:
+            base_query += ' AND data <= ?'
+            count_query += ' AND data <= ?'
+            params.append(data_fim)
+        
+        # Adicionar ordenação e paginação à query principal
+        base_query += ' ORDER BY data DESC LIMIT ? OFFSET ?'
+        
+        # Executar query principal
+        cursor.execute(base_query, params + [15, offset])
+        resultados = [dict(row) for row in cursor.fetchall()]
+        
+        # Executar query da contagem
+        cursor.execute(count_query, params)
         total = cursor.fetchone()['total']
-
+        
         return {
             'dados': resultados,
             'total': total,
@@ -179,27 +186,6 @@ class Pesquisar:
             }
         
         return contexto
-
-    def _chamar_groq(self, system_prompt, user_prompt, temperature, max_tokens):
-        try:
-            client = Groq(api_key=config.GROQ_KEY)
-            
-            chat_completion = client.chat.completions.create(
-                messages=[
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": user_prompt}
-                ],
-                model=config.RESPOSTA_MODEL,
-                top_p=0.9,
-                temperature=temperature,
-                # reasoning_format="hidden",
-                max_completion_tokens=max_tokens,
-            )
-            
-            return chat_completion.choices[0].message.content.strip()
-            
-        except Exception as e:
-            return f"Erro na comunicação com Servidor: {str(e)}"
         
     def gera_resposta(self, query, resultados, modo="pesquisa"):
         contexto = []
@@ -282,3 +268,24 @@ class Pesquisar:
         )
 
         return resultados, resposta
+
+    def _chamar_groq(self, system_prompt, user_prompt, temperature, max_tokens):
+        try:
+            client = Groq(api_key=config.GROQ_KEY)
+            
+            chat_completion = client.chat.completions.create(
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt}
+                ],
+                model=config.RESPOSTA_MODEL,
+                top_p=0.9,
+                temperature=temperature,
+                #reasoning_format="hidden",
+                max_completion_tokens=max_tokens,
+            )
+            
+            return chat_completion.choices[0].message.content.strip()
+            
+        except Exception as e:
+            return f"Erro na comunicação com Servidor: {str(e)}"

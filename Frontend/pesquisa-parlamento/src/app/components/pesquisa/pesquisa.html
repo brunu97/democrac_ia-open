@@ -232,7 +232,10 @@
         </div>
 
         <!-- Resposta gerada pela IA -->
-        <div class="resposta" [innerHTML]="estado.resposta.resposta | markdown"></div>
+        <!-- <div class="resposta" [innerHTML]="estado.resposta.resposta | markdown"></div> -->
+        <div class="resposta">
+          <markdown [data]="estado.resposta.resposta"></markdown>
+        </div>
 
         <!-- Fontes -->
         @if (estado.resposta.fontes && estado.resposta.fontes.length > 0) {
@@ -282,14 +285,62 @@
         <h1>Intervenções de {{ deputadoSelecinado }}</h1>
         <p>Total: {{ estado.tabela.total }} intervenções</p>
 
-        <!-- Pesquisa direita no texto -->
-        <div class="filtro-texto" style="display: flex; gap: 8px; margin-bottom: 16px">
-          <mat-form-field appearance="outline" style="flex: 1">
+        <!-- Filtros: Texto e Datas na mesma linha -->
+        <div style="display: flex; gap: 8px; margin-bottom: 16px; align-items: flex-start">
+          <!-- Pesquisa no texto -->
+          <mat-form-field appearance="outline" style="flex: 2">
             <mat-label>Pesquisar no texto</mat-label>
             <input matInput [(ngModel)]="filtroTexto" (keyup.enter)="pesquisarTexto()" />
           </mat-form-field>
-          <button mat-flat-button class="botao-pesquisar" (click)="pesquisarTexto()">
+
+          <!-- Data Início -->
+          <mat-form-field appearance="outline" style="flex: 1">
+            <mat-label>Data Início</mat-label>
+            <input
+              matInput
+              [matDatepicker]="pickerInicio"
+              [(ngModel)]="dataInicio"
+              placeholder="DD/MM/AAAA"
+              [disabled]="estado.loading"
+            />
+            <mat-datepicker-toggle matIconSuffix [for]="pickerInicio"></mat-datepicker-toggle>
+            <mat-datepicker #pickerInicio></mat-datepicker>
+          </mat-form-field>
+
+          <!-- Data Fim -->
+          <mat-form-field appearance="outline" style="flex: 1">
+            <mat-label>Data Fim</mat-label>
+            <input
+              matInput
+              [matDatepicker]="pickerFim"
+              [(ngModel)]="dataFim"
+              placeholder="DD/MM/AAAA"
+              [disabled]="estado.loading"
+            />
+            <mat-datepicker-toggle matIconSuffix [for]="pickerFim"></mat-datepicker-toggle>
+            <mat-datepicker #pickerFim></mat-datepicker>
+          </mat-form-field>
+
+          <!-- Botão Filtrar -->
+          <button
+            mat-flat-button
+            class="botao-pesquisar"
+            (click)="pesquisarTexto()"
+            style="height: 56px"
+          >
             Filtrar
+          </button>
+
+          <!-- Botão Limpar -->
+          <button
+            mat-button
+            color="warn"
+            (click)="limparPesquisa()"
+            [disabled]="estado.loading || (!dataInicio && !dataFim && !filtroTexto)"
+            style="height: 56px"
+          >
+            <mat-icon>clear</mat-icon>
+            Limpar
           </button>
         </div>
 

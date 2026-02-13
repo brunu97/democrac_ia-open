@@ -17,8 +17,9 @@ export interface TabelaRequest {
   nome: string;
   offset: number;
   texto?: string;
+  data_inicio?: string;
+  data_fim?: string;
 }
-
 export interface Fontes {
  
 }

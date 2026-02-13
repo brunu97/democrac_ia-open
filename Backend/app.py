@@ -69,14 +69,26 @@ def get_tabela():
         nome = data.get('nome')
         offset = data.get('offset', 0)
         texto = data.get('texto')
+        data_inicio = data.get('data_inicio')
+        data_fim = data.get('data_fim')
         
+        # Validação do nome
         if not nome or not isinstance(nome, str) or len(nome) > 200:
             return jsonify({'error': 'Nome inválido'}), 400
         
+        # Validação do offset
         if not isinstance(offset, int) or offset < 0:
             offset = 0
         
-        resultado = pesquisa_core.get_deputado(nome, offset, texto)
+        # Chamar o método com os parâmetros
+        resultado = pesquisa_core.get_deputado(
+            nome=nome, 
+            offset=offset, 
+            texto=texto,
+            data_inicio=data_inicio,
+            data_fim=data_fim
+        )
+        
         return jsonify(resultado), 200
         
     except Exception as e:

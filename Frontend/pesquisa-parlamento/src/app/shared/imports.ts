@@ -12,6 +12,8 @@ import { MatAccordion, MatExpansionModule, MatExpansionPanel } from '@angular/ma
 import { MatToolbar } from '@angular/material/toolbar';
 import { MatChip, MatChipListbox, MatChipOption, MatChipSet } from '@angular/material/chips';
 import { MatAutocomplete, MatAutocompleteModule, MatOption } from '@angular/material/autocomplete';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 export const SharedImports = [
   CommonModule,
@@ -35,5 +37,7 @@ export const SharedImports = [
   MatAutocomplete,
   MatOption,
   MatAutocompleteModule,
-  ReactiveFormsModule
+  ReactiveFormsModule,
+  MatDatepickerModule,
+  MatNativeDateModule,
 ];

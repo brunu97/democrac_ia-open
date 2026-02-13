@@ -8,9 +8,9 @@ import {
   TabelaRequest,
 } from '../../models/models';
 import { PesquisaService } from '../../services/pesquisa-service';
-import { MarkdownPipe } from '../../markdown-pipe';
 import { MatChipListbox } from '@angular/material/chips';
 import { BehaviorSubject } from 'rxjs';
+import { MarkdownModule, MarkdownService } from 'ngx-markdown';
 
 interface Estado {
   loading: boolean;
@@ -23,7 +23,8 @@ interface Estado {
   selector: 'app-pesquisa',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, SharedImports, MarkdownPipe],
+  imports: [CommonModule, SharedImports, MarkdownModule],
+  providers: [MarkdownService],
   templateUrl: './pesquisa.html',
   styleUrl: './pesquisa.css',
 })
@@ -44,6 +45,10 @@ export class Pesquisa {
   deputadosFiltrados: any[] = [];
   deputadoSelecinado: string = '';
   filtroTexto: string = '';
+  
+  // Filtros de data
+  dataInicio: Date | null = null;
+  dataFim: Date | null = null;
 
   off_set_atual = 0;
   pagina_tamanho = 15;
@@ -62,6 +67,12 @@ export class Pesquisa {
   limparSelecao(chipList: MatChipListbox) {
     chipList.value = [];
     this.anosSelecionados = [];
+  }
+
+  limparPesquisa() {
+    this.dataInicio = null;
+    this.dataFim = null;
+    this.filtroTexto = ''
   }
 
   fazerPesquisa() {
@@ -140,6 +151,8 @@ export class Pesquisa {
       nome: nome,
       offset: offset,
       ...(this.filtroTexto ? { texto: this.filtroTexto } : {}),
+      ...(this.dataInicio ? { data_inicio: this.formatarDataParaAPI(this.dataInicio) } : {}),
+      ...(this.dataFim ? { data_fim: this.formatarDataParaAPI(this.dataFim) } : {}),
     };
 
     this.pesquisaService.get_tabela(pesquisa).subscribe({
@@ -155,6 +168,14 @@ export class Pesquisa {
         });
       },
     });
+  }
+
+  // Formatar data para o formato esperado pela API (ajustar conforme necessário)
+  private formatarDataParaAPI(data: Date): string {
+    const ano = data.getFullYear();
+    const mes = String(data.getMonth() + 1).padStart(2, '0');
+    const dia = String(data.getDate()).padStart(2, '0');
+    return `${ano}-${mes}-${dia}`;
   }
 
   pesquisarTexto() {
@@ -200,7 +221,6 @@ export class Pesquisa {
   ultimaPagina() {
     if (this.deputadoSelecinado && this.temProxima) {
       const ultimaOffset = Math.floor((this.dadosTotais - 1) / this.pagina_tamanho) * this.pagina_tamanho;
-
       this.obtemTabela(this.deputadoSelecinado, ultimaOffset);
     }
   }
