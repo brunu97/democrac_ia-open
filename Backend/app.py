@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from config import RESPOSTA_MODEL, PesquisaRequest
+from config import PesquisaRequest
 import pesquisar
 
 app = Flask(__name__)
@@ -15,7 +15,6 @@ CORS(app, resources={
     }
 })
 
-print("modelo: " + str(RESPOSTA_MODEL))
 print("=== Carrega Dados ===")
 if not pesquisa_core.carrega_dados():
     print("Falha ao carregar dados!")

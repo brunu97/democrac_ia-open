@@ -1,0 +1,174 @@
+.guia-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1rem;
+  font-family: Arial, sans-serif;
+  color: #333;
+  line-height: 1.5;
+}
+.topo-titulo {
+    text-align: center;
+    margin-bottom: 50px;
+    color: white;
+}
+.topo-titulo h1 {
+  margin: 0;
+  font-size: 4rem;
+}
+.secao {
+  margin-bottom: 2rem;
+}
+.secao h2 {
+  font-size: 1.7rem;
+  margin-bottom: 1rem;
+  color: #ffffff;
+  border-bottom: 2px solid #93b0c4;
+  padding-bottom: 0.5rem;
+}
+.cartao {
+  background: #0f172a; 
+  color: #e2e8f0; 
+  border-radius: 4px;
+  padding: 2rem;
+  margin-bottom: 1rem;
+  border-radius: 20px;
+}
+.cartao h3 {
+  margin-top: 0;
+  font-size: 1.3rem;
+  color: #dcdcee;
+}
+ul {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+li {
+  margin-bottom: 0.5rem;
+}
+p {
+  font-size: 15px;
+}
+img {
+  background-color: white;
+  padding: 5px;
+  border-radius: 15px;
+}
+
+
+.grelha-estatisticas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+  text-align: center;
+}
+
+.cartao-estatistica {
+  padding: 1.5rem;
+  background: rgba(30, 41, 59, 0.7);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.numero-estatistica {
+  margin: 0;
+  font-size: 2.5rem;
+  color: #75ea66;
+}
+
+.rotulo-estatistica {
+  margin: 0.5rem 0 0 0;
+  color: #94a3b8;
+}
+
+
+.contentor-tabela {
+  margin: 1rem 0;
+  overflow-x: auto;
+}
+
+
+.tabela-estatisticas {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(30, 41, 59, 0.5);
+}
+
+.tabela-estatisticas thead tr {
+  text-align: left;
+}
+
+.tabela-estatisticas th {
+  padding: 0.75rem;
+  border-bottom: 2px solid #4ba259;
+  color: #75ea66;
+  font-weight: 600;
+}
+
+.tabela-estatisticas th.alinhar-direita {
+  text-align: right;
+}
+
+.tabela-estatisticas tbody tr {
+  transition: background 0.2s;
+}
+
+.tabela-estatisticas tbody tr:hover {
+  background: rgba(75, 162, 89, 0.1);
+}
+
+.tabela-estatisticas td {
+  padding: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: #cbd5e1;
+}
+
+.tabela-estatisticas td.alinhar-direita {
+  text-align: right;
+}
+
+
+.tags-palavras {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+
+.tag-palavra {
+  padding: 0.5rem 1rem;
+  background: rgba(75, 234, 102, 0.15);
+  border: 1px solid #75ea66;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  color: #cbd5e1;
+}
+
+
+.nota-estatisticas {
+  margin-top: 2rem;
+  font-style: italic;
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+
+.links-sociais {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+
+.grelha-funcionalidades {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+.item-funcionalidade {
+  text-align: center;
+  max-width: 200px;
+}

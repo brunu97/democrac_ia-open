@@ -222,7 +222,7 @@ class Pesquisar:
         
         config_prompt = prompt.get_prompt_config(modo)
         
-        return self._chamar_groq(system_prompt=config_prompt["system_prompt"], user_prompt=user_prompt, temperature=config_prompt["temperature"], max_tokens=config_prompt["tokens"])
+        return self._chamar_groq(system_prompt=config_prompt["system_prompt"], user_prompt=user_prompt, temperature=config_prompt["temperature"], max_tokens=config_prompt["tokens"], modelo=config_prompt["modelo"])
 
     def pesquisa_constituicao(self, query):
         with self._lock:
@@ -264,28 +264,35 @@ class Pesquisar:
         
         user_prompt = f"CONTEXTO DA CONSTITUIÇÃO:\n{contexto}\n\n---\n\nPERGUNTA: {query}"
         
-        resposta = self._chamar_groq(system_prompt=config_prompt["system_prompt"], user_prompt=user_prompt, temperature=config_prompt["temperature"], max_tokens=config_prompt["tokens"]
+        resposta = self._chamar_groq(
+            system_prompt=config_prompt["system_prompt"], 
+            user_prompt=user_prompt, 
+            temperature=config_prompt["temperature"],
+            max_tokens=config_prompt["tokens"],
+            modelo=config_prompt["modelo"]
         )
 
         return resultados, resposta
 
-    def _chamar_groq(self, system_prompt, user_prompt, temperature, max_tokens):
+    def _chamar_groq(self, system_prompt, user_prompt, temperature, max_tokens, modelo):
         try:
             client = Groq(api_key=config.GROQ_KEY)
-            
-            chat_completion = client.chat.completions.create(
-                messages=[
+            argumentos = {
+                "messages": [
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt}
                 ],
-                model=config.RESPOSTA_MODEL,
-                top_p=0.9,
-                temperature=temperature,
-                #reasoning_format="hidden",
-                max_completion_tokens=max_tokens,
-            )
-            
-            return chat_completion.choices[0].message.content.strip()
-            
+                "model": modelo,
+                "top_p": 0.9,
+                "temperature": temperature,
+                "max_completion_tokens": max_tokens,
+            }
+
+            if modelo == config.MODEL_AVANCADO:
+                argumentos["reasoning_format"] = "hidden"
+
+            resposta_llm = client.chat.completions.create(**argumentos)
+            return resposta_llm.choices[0].message.content.strip()
+
         except Exception as e:
             return f"Erro na comunicação com Servidor: {str(e)}"

@@ -1,4 +1,5 @@
 from datetime import datetime
+from config import MODEL_SIMPLES, MODEL_AVANCADO
 
 
 def get_prompt_config(modo="pesquisa"):
@@ -168,6 +169,13 @@ Quando a pergunta envolver a posição ou opinião de um deputado:
 Se o contexto não mencionar o assunto ou deputado solicitado, declara explicitamente:
 "Não foi encontrada informação sobre [assunto/pessoa] nos documentos selecionados."
 
+### 8. RELEVÂNCIA DA PERGUNTA
+- Antes de responder, verifica se a pergunta do utilizador está relacionada com o conteúdo dos documentos fornecidos ou com temas parlamentares/políticos portugueses.
+- Se a pergunta **não tiver qualquer relação** com o contexto dos documentos nem com a atividade parlamentar:
+  - Não respondas à pergunta.
+  - Responde apenas com: "A sua pergunta não está relacionada com os documentos parlamentares disponíveis."
+- Se a pergunta for vagamente relacionada mas não encontrares informação nos documentos, usa a regra da **Ausência de Informação** (ponto 7).
+
 ## REGRAS DE FORMATAÇÃO OBRIGATÓRIAS:
 - NUNCA uses tabelas em nenhuma circunstância (nem markdown, nem HTML, nem ASCII).
 - Quando precisares de apresentar informação estruturada, usa listas com marcadores ou numeradas.
@@ -289,103 +297,45 @@ Apresenta sempre:
 Informativo mas criativo, analítico mas imaginativo, rigoroso nos factos mas livre na especulação. Podes usar um tom ligeiramente descontraído, mas sempre profissional.
     """
 
-    system_prompt_imaginativa_livre = f"""
-És um Criador de Narrativas Políticas Portuguesas - um contador de histórias sobre política.
-
-NÃO RECEBES DOCUMENTOS. Inventa tudo livremente.
-
-Escreve em Português de Portugal.
-Data atual: {data_hoje}
-
-## PARTIDOS PORTUGUESES:
-Esquerda: BE, PCP, Livre
-Centro-esquerda: PS, JPP
-Centro-direita: PSD, CDS-PP
-Direita: IL, Chega
-
-## A TUA MISSÃO:
-Cria histórias políticas ficcionais e plausíveis sobre a Assembleia da República.
-Tens total liberdade criativa - podes escrever como quiseres.
-
-## PODES FAZER O QUE QUISERES:
-- Criar debates parlamentares inventados
-- Escrever diálogos dramáticos entre deputados
-- Imaginar escândalos políticos fictícios
-- Desenvolver intrigas de bastidores
-- Fazer sátira política inteligente
-- Escrever como se fosses jornalista, romancista, ou comentador
-- Misturar géneros: drama, comédia, thriller político
-- Usar qualquer formato: narrativa, crónica, reportagem fictícia, diário, tweets imaginários
-- Criar personagens e situações do zero
-
-## LIBERDADE TOTAL DE FORMATO:
-Não precisas de seguir estruturas rígidas.
-Escreve da forma que achares melhor para a história.
-Podes usar:
-- Prosa narrativa
-- Diálogos de teatro
-- Reportagem jornalística fictícia
-- Crónica política
-- Tweets e posts imaginários
-- Cartas entre deputados
-- Atas inventadas
-- O que a tua imaginação mandar
-
-## REGRAS MÍNIMAS:
-- NUNCA uses tabelas
-- Respeita deputados e instituições (mesmo sendo ficção)
-- Evita vida pessoal
-- Deixa claro que é ficção/especulação
-- Depois de títulos markdown (# ##), continua texto na linha seguinte sem espaço
-
-## TOM:
-Qualquer tom que queiras: dramático, humorístico, irónico, épico, noir político...
-Adapta ao que a pergunta pede.
-
-DIVERTE-TE! És um escritor político com imaginação livre.
-"""
-
     PROMPT_CONFIGS = {
         "pesquisa": {
             "system_prompt": system_prompt_pesquisa,
             "temperature": 0.1,
             "tokens": 5000,
-            "k": 8
+            "k": 8,
+            "modelo": MODEL_SIMPLES
         },
 
         "explicativo": {
             "system_prompt": system_prompt_explicativa,
             "temperature": 0.2,
             "tokens": 6000,
-            "k": 12
-        },
-
-        "imaginativo_livre": {
-            "system_prompt": system_prompt_imaginativa_livre,
-            "temperature": 0.8,
-            "tokens": 8000,
-            "k": 8
+            "k": 12,
+            "modelo": MODEL_AVANCADO
         },
 
         "imaginativo": {
             "system_prompt": system_prompt_imaginativa,
             "temperature": 0.7,
             "tokens": 8000,
-            "k": 8
+            "k": 8,
+            "modelo": MODEL_SIMPLES
         },
 
         "simples": {
             "system_prompt": None,
             "temperature": None,
             "tokens": None,
-            "k": 20
+            "k": 20,
+            "modelo": MODEL_SIMPLES
         },
 
         "constituicao": {
             "system_prompt": system_prompt_constituicao,
             "temperature": 0.1,
             "tokens": 7000,
-            "k": 14
+            "k": 14,
+            "modelo": MODEL_SIMPLES
         }
     }
 

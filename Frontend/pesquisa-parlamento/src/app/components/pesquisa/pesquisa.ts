@@ -11,6 +11,7 @@ import { PesquisaService } from '../../services/pesquisa-service';
 import { MatChipListbox } from '@angular/material/chips';
 import { BehaviorSubject } from 'rxjs';
 import { MarkdownModule, MarkdownService } from 'ngx-markdown';
+import { Meta, Title } from '@angular/platform-browser';
 
 interface Estado {
   loading: boolean;
@@ -45,7 +46,7 @@ export class Pesquisa {
   deputadosFiltrados: any[] = [];
   deputadoSelecinado: string = '';
   filtroTexto: string = '';
-  
+
   // Filtros de data
   dataInicio: Date | null = null;
   dataFim: Date | null = null;
@@ -54,7 +55,31 @@ export class Pesquisa {
   pagina_tamanho = 15;
   dadosTotais = 0;
 
-  constructor(private pesquisaService: PesquisaService) {}
+  constructor(
+    private pesquisaService: PesquisaService,
+    private meta: Meta,
+    private title: Title,
+  ) {
+    this.title.setTitle('Democrac_IA - Pesquisa Debates Parlamentares com IA');
+
+    this.meta.updateTag({
+      name: 'description',
+      content: 'O Democrac_IA é uma ferramenta de pesquisa que funciona com os debates da Assembleia da República. Desenvolvida para tornar a informação mais acessível, esta aplicação permite consultar e analisar todo o histórico das discussões da Assembleia da República.',
+    });
+
+    this.meta.updateTag({
+      name: 'keywords',
+      content:'parlamento, debates, portugal, assembleia república, deputados, constituição, política, IA',
+    });
+
+    this.meta.updateTag({ property: 'og:title', content: 'Democrac_IA - O Parlamento em IA' });
+    this.meta.updateTag({
+      property: 'og:description',
+      content: 'Pesquise debates parlamentares portugueses com IA',
+    });
+    this.meta.updateTag({ property: 'og:type', content: 'website' });
+    this.meta.updateTag({ property: 'og:url', content: 'https://www.democrac-ia.pt' });
+  }
 
   private atualizarEstado(parcial: Partial<Estado>) {
     this.estado$.next({ ...this.estado$.value, ...parcial });
@@ -72,7 +97,7 @@ export class Pesquisa {
   limparPesquisa() {
     this.dataInicio = null;
     this.dataFim = null;
-    this.filtroTexto = ''
+    this.filtroTexto = '';
   }
 
   fazerPesquisa() {

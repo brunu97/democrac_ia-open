@@ -9,11 +9,9 @@ GROQ_KEY = "CHAVE_GROQ"
 EMBED_MODEL = "BAAI/bge-m3"
 MODEL_SIMPLES = "llama-3.1-8b-instant"
 MODEL_AVANCADO = "qwen/qwen3-32b"
+
 MODEL_AVANCADO_2 = "meta-llama/llama-4-scout-17b-16e-instruct"
 MODEL_AVANCADO_3 = "llama-3.3-70b-versatile"
-
-
-RESPOSTA_MODEL = MODEL_SIMPLES
 
 MODOS_VALIDOS = {'pesquisa', 'explicativo', 'imaginativo', 'simples', 'constituicao'}
 

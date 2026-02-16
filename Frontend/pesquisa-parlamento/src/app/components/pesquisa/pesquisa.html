@@ -101,7 +101,7 @@
 
       @if (modoSelecionado === ModoPesquisa.SIMPLES) {
         <p>
-          Não utiliza a IA para responder, apenas apresenta fontes sobre a pesquisa, ideal para
+          <b>Não utiliza IA para responder</b>. Apresenta apenas fontes sobre a pesquisa, ideal para
           procurar citações ou referências diretamente nos documentos.
         </p>
       }
@@ -153,10 +153,11 @@
       <!-- Pesquisa do que cada um disse por nome -->
       @if (modoSelecionado === ModoPesquisa.DEPUTADO) {
         <p>
-          Não utiliza IA para responder, apenas lista todos os deputados que constam nos documentos
+          <b>Não utiliza IA para responder</b>. Lista todos os deputados que constam nos documentos
           e todas as suas intervenções. Todos os dados aqui apresentados são crus e não têm qualquer
           tipo de tratamento, formatação ou correção de erros.
         </p>
+        <p>É possível pesquisar as intervenções por data e por texto diretamente.</p>
         <p>
           É possível que certas intervenções tragam juntas outras intervenções de diferentes
           deputados. Nestes casos, ao ler o texto, é importante usar o arquivo como fonte para
@@ -212,21 +213,27 @@
         <div class="pergunta-a-resposta">
           @if (estado.resposta.modo === ModoPesquisa.PESQUISA) {
             <p><b>🔍 Modo Pesquisa</b></p>
+            @if (estado.resposta.anos && estado.resposta.anos.length > 0) {
+              <p>Em {{ estado.resposta.anos.join(', ') }}</p>
+            }
           }
           @if (estado.resposta.modo === ModoPesquisa.EXPLICATIVO) {
             <p><b>📚 Modo Explicativo</b></p>
+            @if (estado.resposta.anos && estado.resposta.anos.length > 0) {
+              <p>Em {{ estado.resposta.anos.join(', ') }}</p>
+            }
           }
           @if (estado.resposta.modo === ModoPesquisa.IMAGINATIVO) {
             <p><b>💭 Modo Imaginativo</b></p>
+            @if (estado.resposta.anos && estado.resposta.anos.length > 0) {
+              <p>Em {{ estado.resposta.anos.join(', ') }}</p>
+            }
           }
           @if (estado.resposta.modo === ModoPesquisa.SIMPLES) {
             <p><b>📌 Modo Simples</b></p>
           }
           @if (estado.resposta.modo === ModoPesquisa.CONSTITUICAO) {
             <p><b>📜 Constituição</b></p>
-          }
-          @if (estado.resposta.anos && estado.resposta.anos.length > 0) {
-            <p>Em {{ estado.resposta.anos.join(', ') }}</p>
           }
           <p>{{ estado.resposta.pergunta }}</p>
         </div>
