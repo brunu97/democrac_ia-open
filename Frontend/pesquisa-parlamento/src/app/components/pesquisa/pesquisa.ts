@@ -12,6 +12,7 @@ import { MatChipListbox } from '@angular/material/chips';
 import { BehaviorSubject } from 'rxjs';
 import { MarkdownModule, MarkdownService } from 'ngx-markdown';
 import { Meta, Title } from '@angular/platform-browser';
+import { SelecionadoPipe } from '../../selecionado.pipe';
 
 interface Estado {
   loading: boolean;
@@ -24,7 +25,7 @@ interface Estado {
   selector: 'app-pesquisa',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, SharedImports, MarkdownModule],
+  imports: [CommonModule, SharedImports, MarkdownModule, SelecionadoPipe],
   providers: [MarkdownService],
   templateUrl: './pesquisa.html',
   styleUrl: './pesquisa.css',
@@ -226,6 +227,7 @@ export class Pesquisa {
   }
 
   onDeputadoSelecionado(event: any) {
+    this.limparPesquisa();
     this.deputadoSelecinado = event.option.value;
     this.obtemTabela(this.deputadoSelecinado, 0);
   }

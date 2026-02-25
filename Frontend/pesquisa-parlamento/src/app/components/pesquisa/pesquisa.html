@@ -159,8 +159,7 @@
         </p>
         <p>É possível pesquisar as intervenções por data e por texto diretamente.</p>
         <p>
-          É possível que certas intervenções tragam juntas outras intervenções de diferentes
-          deputados. Nestes casos, ao ler o texto, é importante usar o arquivo como fonte para
+          É possível mas raro que certas intervenções tragam juntas outras intervenções ou didascálias. Nestes casos, ao ler o texto, é importante usar o arquivo como fonte para
           garantir uma boa compreensão do que foi dito.
         </p>
         <p>
@@ -293,7 +292,7 @@
         <p>Total: {{ estado.tabela.total }} intervenções</p>
 
         <!-- Filtros: Texto e Datas na mesma linha -->
-        <div style="display: flex; gap: 8px; margin-bottom: 16px; align-items: flex-start">
+        <div class="filtros-tabela">
           <!-- Pesquisa no texto -->
           <mat-form-field appearance="outline" style="flex: 2">
             <mat-label>Pesquisar no texto</mat-label>
@@ -351,36 +350,38 @@
           </button>
         </div>
 
-        <table class="tabela-deputado">
-          <thead>
-            <tr>
-              <th>Nome</th>
-              <th>Partido</th>
-              <th>Arquivo</th>
-              <th>Data</th>
-              <th>Texto</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (item of estado.tabela.dados; track $index) {
+        <div class="tabela-container">
+          <table class="tabela-deputado">
+            <thead>
               <tr>
-                <td>{{ item.nome }}</td>
-                <td>{{ item.partido }}</td>
-                <td>
-                  <a
-                    class="font-link"
-                    [href]="gerarLink(item.ficheiro) + '/' + item.pagina"
-                    target="_blank"
-                  >
-                    🔗 PDF
-                  </a>
-                </td>
-                <td>{{ item.data }}</td>
-                <td>{{ item.texto }}</td>
+                <th>Nome</th>
+                <th>Partido</th>
+                <th>Arquivo</th>
+                <th>Data</th>
+                <th>Texto</th>
               </tr>
-            }
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              @for (item of estado.tabela.dados; track $index) {
+                <tr>
+                  <td>{{ item.nome }}</td>
+                  <td>{{ item.partido }}</td>
+                  <td>
+                    <a
+                      class="font-link"
+                      [href]="gerarLink(item.ficheiro) + '/' + item.pagina"
+                      target="_blank"
+                    >
+                      🔗 PDF
+                    </a>
+                  </td>
+                  <td>{{ item.data }}</td>
+                  <td [innerHTML]="item.texto | selecionado: filtroTexto"></td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
 
         <div class="paginacao">
           <button mat-button (click)="primeiraPagina()" [disabled]="!temAnterior">
