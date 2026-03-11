@@ -2,7 +2,7 @@
 
 ## Queres mesmo saber o que realmente se passa aqui?
 
-Primeiro de tudo, tudo isto é **código aberto**! O backend e o frontend, vai aqui, podes fazer o que quiseres, podes copiar, expandir, tanto faz: [<u>GitHub</u>](https://github.com/brunu97/democrac_ia-open)
+Primeiro de tudo, tudo isto é **código aberto**! O backend e o frontend, vai aqui, podes fazer o que quiseres, podes copiar, expandir, tanto faz: [GitHub](https://github.com/brunu97/democrac_ia-open)
 
 O código não está perfeito, e certamente há pontos onde é possível melhorar, se tens alguma sugestão, envia [para aqui](https://docs.google.com/forms/d/e/1FAIpQLSfp3p-MzKBBUkeyG_b_Tv3Smr9bKByWhuheWD1OqDjfU-39Pw/viewform?usp=header)
 
@@ -10,7 +10,7 @@ Primeiro vamos à maneira como o site funciona e de seguida à forma como os dad
 
 A Pesquisa no site de forma resumida num diagrama funciona assim, é essencialmente um [RAG](https://en.wikipedia.org/wiki/Retrieval-augmented_generation) (Retrieval-Augmented Generation)
 
-![Diagrama de como funciona o Democrac_IA](diagrama.png)
+![Diagrama de como funciona o Democrac_IA](./diagrama.png)
 
 Toda a backend é feita em **Python** usando **Flask**, Python é ideal para tudo o que é IA e ML, há excelentes módulos para se usar.
 
@@ -20,7 +20,7 @@ Depois de transformar os textos em vetores, estes beep boops podem ir para o FAI
 
 ---
 
-### **O FAISS**
+### O FAISS
 
 **Facebook AI Similarity Search** ou simplesmente **FAISS** é uma biblioteca de pesquisa vetorial desenvolvida pela Meta pela equipa do Facebook IA (daí o nome). É usada para encontrar os vetores mais semelhantes a um vetor de consulta em uma grande base de dados vetoriais.
 
@@ -34,7 +34,7 @@ Todos os textos estão guardados numa base de dados em **SQLite**, textos estes 
 
 ---
 
-### **A Magia acontece - LLM com RAG**
+### A Magia acontece - LLM com RAG
 
 Depois de se encontrar toda a informação relevante, todos os dados incluindo um conjunto de instruções destinadas ao system prompt da LLM são enviados para esta fase do processo.
 
@@ -54,9 +54,9 @@ Todo o frontend é feito em **Angular**, não haveria nada de mal em utilizar o 
 
 ---
 
-### **A Extração de dados**
+### A Extração de dados
 
-![Diagrama de extração de dados](diagrama2.png)
+![Diagrama de extração de dados](./diagrama2.png)
 
 Talvez a parte mais difícil seja a extração dos PDFs dos debates do Parlamento. Inicialmente, a ideia ia bem para além de só dos debates, mas como todo o conteúdo que o site tem, desde 1821 (aproveito já para agradecer o trabalho incrível que o pessoal do parlamento fez a transcrever tudo isto e ter tudo digitalizado), dificuldades técnicas surgiram rapidamente. Não só a resolução de vários ficheiros não é a ideal para um computador ler, como o esforço do hardware para processar isto seria enorme, então decidi focar só nos debates a partir de 2006.
 
