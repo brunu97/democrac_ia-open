@@ -1,0 +1,54 @@
+<div class="base">
+  <div class="header">
+    <h1>NotícIAs</h1>
+    <p class="subtitle">O que está a acontecer em Portugal &middot; Atualizado de 2 em 2 horas</p>
+  </div>
+
+  @if (estado$ | async; as estado) {
+    <!-- Loading -->
+    @if (estado.loading) {
+      <div class="loading-box">
+        <div class="spinner"></div>
+        <p>A carregar notícias...</p>
+      </div>
+    }
+
+    <!-- Erro -->
+    @if (estado.erro && !estado.loading) {
+      <div class="erro-box">
+        <p>⚠️ {{ estado.erro }}</p>
+      </div>
+    }
+
+    @if (!estado.loading && !estado.erro) {
+      <div class="layout">
+        <!-- Resumo -->
+        @if (estado.resumo) {
+          <div class="resumo-destaque">
+            <div class="resumo-topo">
+              <span class="live-dot"></span>
+              <span class="resumo-label">Resumo</span>
+              @if (estado.atualizado_em) {
+                <span class="atualizado">Atualizado {{ formatarData(estado.atualizado_em) }}</span>
+              }
+            </div>
+            <div class="resumo-markdown" [innerHTML]="estado.resumo"></div>
+          </div>
+        }
+
+        <!-- Grelha das noticias -->
+        <div class="noticias-grid">
+          @for (noticia of estado.noticias; track noticia.link) {
+            <a class="item" [href]="noticia.link" target="_blank" rel="noopener noreferrer">
+              <div class="item-corpo">
+                <span class="item-fonte">{{ noticia.fonte }}</span>
+                <p class="item-titulo">{{ noticia.titulo }}</p>
+                <span class="item-data">{{ formatarData(noticia.pub_date) }}</span>
+              </div>
+            </a>
+          }
+        </div>
+      </div>
+    }
+  }
+</div>

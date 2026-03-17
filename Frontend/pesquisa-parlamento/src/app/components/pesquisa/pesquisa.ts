@@ -25,7 +25,7 @@ interface Estado {
   selector: 'app-pesquisa',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, SharedImports, MarkdownModule, SelecionadoPipe],
+  imports: [CommonModule, SharedImports, MarkdownModule],
   providers: [MarkdownService],
   templateUrl: './pesquisa.html',
   styleUrl: './pesquisa.css',
@@ -38,14 +38,12 @@ export class Pesquisa {
     erro: null,
   });
 
+  usarIA: boolean = true;
   pergunta: string = '';
   modoSelecionado: string = ModoPesquisa.PESQUISA;
   ModoPesquisa = ModoPesquisa;
   anos: number[] = Array.from({ length: 2026 - 2006 + 1 }, (_, i) => 2006 + i);
   anosSelecionados: number[] = [];
-  deputadosLista: any[] = [];
-  deputadosFiltrados: any[] = [];
-  deputadoSelecinado: string = '';
   filtroTexto: string = '';
 
   // Filtros de data
@@ -62,24 +60,17 @@ export class Pesquisa {
     private title: Title,
   ) {
     this.title.setTitle('Democrac_IA - Pesquisa Debates Parlamentares com IA');
-
     this.meta.updateTag({
       name: 'description',
-      content: 'O Democrac_IA é uma ferramenta de pesquisa que funciona com os debates da Assembleia da República. Desenvolvida para tornar a informação mais acessível, esta aplicação permite consultar e analisar todo o histórico das discussões da Assembleia da República.',
+      content: 'Pesquisa debates parlamentares de Portugal com IA. Analisa intervenções e deputados da Assembleia da República.',
     });
-
-    this.meta.updateTag({
-      name: 'keywords',
-      content:'parlamento, debates, portugal, assembleia república, deputados, constituição, política, IA',
-    });
-
-    this.meta.updateTag({ property: 'og:title', content: 'Democrac_IA - O Parlamento em IA' });
-    this.meta.updateTag({
-      property: 'og:description',
-      content: 'Pesquise debates parlamentares portugueses com IA',
-    });
+    this.meta.updateTag({ property: 'og:title', content: 'Democrac_IA - Pesquisa Debates Parlamentares com IA' });
+    this.meta.updateTag({ property: 'og:description', content: 'Pesquisa debates parlamentares de Portugal com IA.' });
     this.meta.updateTag({ property: 'og:type', content: 'website' });
-    this.meta.updateTag({ property: 'og:url', content: 'https://www.democrac-ia.pt' });
+    this.meta.updateTag({ property: 'og:url', content: 'https://www.democrac-ia.pt/' });
+    this.meta.updateTag({ name: 'twitter:title', content: 'Democrac_IA - Pesquisa Debates Parlamentares com IA' });
+    this.meta.updateTag({ name: 'twitter:description', content: 'Pesquisa debates parlamentares de Portugal com IA.' });
+    this.meta.updateTag({ name: 'robots', content: 'index, follow' });
   }
 
   private atualizarEstado(parcial: Partial<Estado>) {
@@ -104,16 +95,21 @@ export class Pesquisa {
   fazerPesquisa() {
     this.atualizarEstado({ loading: true, resposta: null, tabela: null, erro: null });
 
+    const modo =
+      this.modoSelecionado === ModoPesquisa.PESQUISA && !this.usarIA
+        ? ModoPesquisa.SIMPLES
+        : this.modoSelecionado;
+
     let pesquisa: PesquisaRequest = {
       pergunta: this.pergunta,
-      modo: this.modoSelecionado,
+      modo: modo,
       anos: this.anosSelecionados,
     };
 
     this.pesquisaService.procurar(pesquisa).subscribe({
       next: (res: PesquisaResultado) => {
         res.pergunta = this.pergunta;
-        res.modo = this.modoSelecionado;
+        res.modo = modo;
         res.anos = this.anosSelecionados;
         this.pergunta = '';
         this.atualizarEstado({ loading: false, resposta: res });
@@ -148,107 +144,11 @@ export class Pesquisa {
 
   selecionarModo(modo: string) {
     this.modoSelecionado = modo;
-
-    if (modo === ModoPesquisa.DEPUTADO && this.deputadosLista.length === 0) {
-      this.pesquisaService.get_oradores().subscribe({
-        next: (res: any) => {
-          this.deputadosLista = res;
-          this.deputadosFiltrados = res;
-        },
-        error: () => {
-          this.atualizarEstado({
-            erro: 'Ocorreu um erro ao carregar a lista de deputados.',
-          });
-        },
-      });
-    }
   }
 
   mostraSelecionados() {
     return this.anosSelecionados.length === 0 || this.anos.length === this.anosSelecionados.length
       ? 'Todos os anos'
       : 'Selecionados: ' + this.anosSelecionados.length;
-  }
-
-  obtemTabela(nome: string, offset: number) {
-    this.atualizarEstado({ loading: true, resposta: null, tabela: null, erro: null });
-
-    let pesquisa: TabelaRequest = {
-      nome: nome,
-      offset: offset,
-      ...(this.filtroTexto ? { texto: this.filtroTexto } : {}),
-      ...(this.dataInicio ? { data_inicio: this.formatarDataParaAPI(this.dataInicio) } : {}),
-      ...(this.dataFim ? { data_fim: this.formatarDataParaAPI(this.dataFim) } : {}),
-    };
-
-    this.pesquisaService.get_tabela(pesquisa).subscribe({
-      next: (res: any) => {
-        this.off_set_atual = offset;
-        this.dadosTotais = res.total;
-        this.atualizarEstado({ loading: false, tabela: res });
-      },
-      error: () => {
-        this.atualizarEstado({
-          loading: false,
-          erro: 'Ocorreu um erro ao carregar a tabela. Tenta mais tarde.',
-        });
-      },
-    });
-  }
-
-  // Formatar data para o formato esperado pela API (ajustar conforme necessário)
-  private formatarDataParaAPI(data: Date): string {
-    const ano = data.getFullYear();
-    const mes = String(data.getMonth() + 1).padStart(2, '0');
-    const dia = String(data.getDate()).padStart(2, '0');
-    return `${ano}-${mes}-${dia}`;
-  }
-
-  pesquisarTexto() {
-    if (this.deputadoSelecinado) {
-      this.obtemTabela(this.deputadoSelecinado, 0);
-    }
-  }
-
-  proximaPagina() {
-    this.obtemTabela(this.deputadoSelecinado, this.off_set_atual + this.pagina_tamanho);
-  }
-
-  paginaAnterior() {
-    this.obtemTabela(this.deputadoSelecinado, this.off_set_atual - this.pagina_tamanho);
-  }
-
-  get temAnterior(): boolean {
-    return this.off_set_atual > 0;
-  }
-
-  get temProxima(): boolean {
-    return this.off_set_atual + this.pagina_tamanho < this.dadosTotais;
-  }
-
-  onDeputadoSelecionado(event: any) {
-    this.limparPesquisa();
-    this.deputadoSelecinado = event.option.value;
-    this.obtemTabela(this.deputadoSelecinado, 0);
-  }
-
-  filtrarDeputados(event: Event) {
-    const valor = (event.target as HTMLInputElement).value.toLowerCase();
-    this.deputadosFiltrados = this.deputadosLista.filter((d) =>
-      d.nome.toLowerCase().includes(valor),
-    );
-  }
-
-  primeiraPagina() {
-    if (this.deputadoSelecinado && this.temAnterior) {
-      this.obtemTabela(this.deputadoSelecinado, 0);
-    }
-  }
-
-  ultimaPagina() {
-    if (this.deputadoSelecinado && this.temProxima) {
-      const ultimaOffset = Math.floor((this.dadosTotais - 1) / this.pagina_tamanho) * this.pagina_tamanho;
-      this.obtemTabela(this.deputadoSelecinado, ultimaOffset);
-    }
   }
 }

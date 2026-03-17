@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { SharedImports } from '../../shared/imports';
-import { Router } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-barra',
-  imports: [SharedImports],
+  imports: [SharedImports, RouterLink, RouterLinkActive],
   templateUrl: './barra.html',
   styleUrl: './barra.scss',
 })

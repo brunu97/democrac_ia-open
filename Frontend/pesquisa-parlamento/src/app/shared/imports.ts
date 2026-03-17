@@ -14,6 +14,7 @@ import { MatChip, MatChipListbox, MatChipOption, MatChipSet } from '@angular/mat
 import { MatAutocomplete, MatAutocompleteModule, MatOption } from '@angular/material/autocomplete';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 export const SharedImports = [
   CommonModule,
@@ -40,4 +41,5 @@ export const SharedImports = [
   ReactiveFormsModule,
   MatDatepickerModule,
   MatNativeDateModule,
+  MatSlideToggleModule
 ];

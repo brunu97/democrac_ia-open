@@ -1,10 +1,11 @@
-from flask import Flask, request, jsonify
+from flask import Flask, json, request, jsonify
 from flask_cors import CORS
-from config import PesquisaRequest
+from config import PesquisaRequest, NOTICIAS_FICHEIRO
 import pesquisar
 
 app = Flask(__name__)
 pesquisa_core = pesquisar.Pesquisar()
+
 CORS(app, resources={
     r"/api/*": {
         "origins": [
@@ -93,6 +94,40 @@ def get_tabela():
     except Exception as e:
         print(f"Erro: {e}")
         return jsonify({'error': 'Erro interno'}), 500
+
+
+
+# ==================== QUIZ ====================
+
+@app.route('/api/quiz', methods=['GET'])
+def api_quiz():
+    try:
+        pergunta = pesquisa_core.obtem_quiz()
+        if not pergunta:
+            return jsonify({'error': 'Não foi possível obter'}), 500
+        return jsonify(pergunta)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+# ==================== NOTÍCIAS ====================
+
+@app.route('/api/noticias', methods=['GET'])
+def api_noticias():
+    try:
+        with open(NOTICIAS_FICHEIRO, 'r', encoding='utf-8') as f:
+            dados = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return jsonify({'noticias': [], 'resumo': '', 'atualizado_em': None})
+
+    todas = dados['noticias']
+
+    return jsonify({
+        'noticias': todas,
+        'total': len(todas),
+        'resumo': dados.get('resumo', ''),
+        'atualizado_em': dados.get('atualizado_em')
+    })
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=False, use_reloader=False)

@@ -22,7 +22,6 @@ $transition-speed: 0.3s;
   align-items: center;
   justify-content: space-between;
   height: 100%;
-  max-width: 1400px;
   margin: 0 auto;
   padding: 0 24px;
   width: 100%;
@@ -153,6 +152,42 @@ $transition-speed: 0.3s;
     background-color: rgba(255, 255, 255, 0.1);
     border-left-color: $accent-color;
   }
+}
+
+
+.nav-actions {
+  display: flex;
+  gap: 4px;
+  margin-left: 16px;
+  padding-left: 16px;
+  border-left: 1px solid rgba(255, 255, 255, 0.25);
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+// Link ativo - Desktop
+.nav-item.nav-active {
+  background-color: rgba(255, 255, 255, 0.15);
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 12px;
+    right: 12px;
+    height: 3px;
+    background: $accent-color;
+    border-radius: 3px 3px 0 0;
+  }
+}
+
+// Link ativo - Mobile
+.mobile-nav-item.nav-active {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-left-color: $accent-color;
 }
 
 // Responsividade

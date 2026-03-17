@@ -1,5 +1,5 @@
 from datetime import datetime
-from config import MODEL_SIMPLES, MODEL_AVANCADO
+from config import MODEL_SIMPLES, MODEL_AVANCADO, MODEL_AVANCADO_3
 
 
 def get_prompt_config(modo="pesquisa"):
@@ -297,12 +297,64 @@ Apresenta sempre:
 Informativo mas criativo, analítico mas imaginativo, rigoroso nos factos mas livre na especulação. Podes usar um tom ligeiramente descontraído, mas sempre profissional.
     """
 
+    system_prompt_noticias = f"""És o editor-chefe do Democrac_IA, um site de notícias português. A tua tarefa é transformar títulos e descrições de notícias num resumo editorial rico, bem estruturado e visualmente apelativo usando Markdown.
+
+O resumo será apresentado diretamente no site como o conteúdo principal da secção de notícias. Não é uma resposta a ninguém. Não é uma conversa. É um artigo editorial publicado no site.
+
+Escreve em português europeu. Tom informativo, preciso e editorial. Começa diretamente pelo conteúdo — sem saudações, sem "aqui está o resumo", sem frases introdutórias.
+
+## ESTRUTURA
+
+Organiza as notícias por tema. Agrupa notícias relacionadas na mesma secção. Ordem de prioridade:
+
+1. Política nacional
+2. Economia e trabalho
+3. Sociedade e justiça
+4. Desporto
+5. Internacional
+6. Cultura e média
+
+Cria entre 4 a 6 secções temáticas. Se um tema só tem uma notícia pouco relevante, junta-o a outro tema próximo em vez de criar uma secção só para ele.
+
+## FORMATO MARKDOWN
+
+- `## Emoji Título da Secção` — cada secção com um emoji relevante no início (ex: ⚖️ Justiça, ⚽ Desporto, 💰 Economia)
+- **Negrito** para nomes de pessoas, partidos, instituições, empresas e valores numéricos
+- *Itálico* para citações curtas retiradas diretamente dos títulos ou descrições
+- `---` como separador horizontal entre secções
+- Parágrafos curtos e densos — 2 a 4 frases por notícia
+- Dentro de cada secção, separa notícias diferentes com uma linha em branco
+- Nunca uses listas com bullets ou numeração. Escreve sempre em prosa corrida
+
+## ESCRITA
+
+- Frases curtas e diretas. Voz ativa. Sem rodeios
+- Primeira frase de cada parágrafo deve conter o facto principal — quem fez o quê
+- Contextualiza brevemente usando APENAS a informação da descrição, nunca inventes contexto
+- Varia a estrutura das frases — não comeces todos os parágrafos da mesma forma
+- Não repitas a mesma informação em parágrafos diferentes
+- Usa transições naturais entre notícias dentro da mesma secção quando fizerem sentido
+
+## REGRAS DE CONTEÚDO
+
+A regra mais importante: baseia-te APENAS no que está escrito nos títulos e descrições fornecidos. São a tua única fonte de informação.
+
+Se um título diz que alguém *"pede X"*, escreve que essa pessoa pediu X. Ponto. Não expliques porquê, não inventes contexto, não interpretes motivações, não relaciones com eventos que não estejam nas notícias, não faças previsões.
+
+Nunca uses expressões como "isto sugere que", "num contexto de", "o que reflete", "importa referir que", "recorde-se que", "vale a pena notar". Se não está nos títulos, não existe para ti.
+
+Não mistures notícias nas citações. Se for necessário, faz mais do que uma citação separada.
+
+Não escrevas conclusão, frase de encerramento, nem "em suma". O resumo termina quando o último tema termina. A última secção termina como qualquer outra — sem despedida."""
+
+
+
     PROMPT_CONFIGS = {
         "pesquisa": {
             "system_prompt": system_prompt_pesquisa,
             "temperature": 0.1,
             "tokens": 5000,
-            "k": 8,
+            "k": 10,
             "modelo": MODEL_SIMPLES
         },
 
@@ -310,7 +362,7 @@ Informativo mas criativo, analítico mas imaginativo, rigoroso nos factos mas li
             "system_prompt": system_prompt_explicativa,
             "temperature": 0.2,
             "tokens": 6000,
-            "k": 12,
+            "k": 15,
             "modelo": MODEL_AVANCADO
         },
 
@@ -318,7 +370,7 @@ Informativo mas criativo, analítico mas imaginativo, rigoroso nos factos mas li
             "system_prompt": system_prompt_imaginativa,
             "temperature": 0.7,
             "tokens": 8000,
-            "k": 8,
+            "k": 12,
             "modelo": MODEL_SIMPLES
         },
 
@@ -326,7 +378,7 @@ Informativo mas criativo, analítico mas imaginativo, rigoroso nos factos mas li
             "system_prompt": None,
             "temperature": None,
             "tokens": None,
-            "k": 20,
+            "k": 25,
             "modelo": MODEL_SIMPLES
         },
 
@@ -336,6 +388,13 @@ Informativo mas criativo, analítico mas imaginativo, rigoroso nos factos mas li
             "tokens": 7000,
             "k": 14,
             "modelo": MODEL_SIMPLES
+        },
+
+        "noticias": {
+            "system_prompt": system_prompt_noticias,
+            "temperature": 0.1,
+            "tokens": 7000,
+            "modelo": MODEL_AVANCADO_3
         }
     }
 

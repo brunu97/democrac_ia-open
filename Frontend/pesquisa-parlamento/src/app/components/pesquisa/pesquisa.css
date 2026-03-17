@@ -37,13 +37,6 @@
   align-items: flex-start;
 }
 
-.deputados-lista {
-  display: flex;
-  gap: 15px;
-  align-items: flex-start;
-  padding: 5px;
-}
-
 mat-form-field {
   flex: 1;
 }
@@ -88,6 +81,20 @@ mat-form-field {
   font-size: 16px;
 }
 
+.toggle-ia {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+
+.toggle-hint {
+  font-size: 16px;
+  color: #fd5a5a;
+  font-style: italic;
+}
+
 .spinner {
   width: 50px;
   height: 50px;
@@ -99,23 +106,22 @@ mat-form-field {
 }
 
 @keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
+
 .fonte-card {
   background: #1e293b !important;
   color: #cbd5e1 !important;
   border: 1px solid rgba(255, 255, 255, 0.05);
   margin-bottom: 15px;
 }
+
 .font-link {
   color: #60a5fa;
   font-weight: 600;
 }
+
 .fonte-header {
   display: flex;
   gap: 15px;
@@ -123,6 +129,7 @@ mat-form-field {
   margin-bottom: 12px;
   flex-wrap: wrap;
 }
+
 .fonte-rank {
   background: #4ba259;
   color: white;
@@ -130,6 +137,7 @@ mat-form-field {
   border-radius: 12px;
   font-size: 1.5em;
 }
+
 .fonte-score {
   color: #1e40af;
   font-weight: 600;
@@ -138,130 +146,22 @@ mat-form-field {
   border-radius: 8px;
   font-size: 0.9em;
 }
+
 .fonte-content {
   margin: 15px 0;
   line-height: 1.6;
 }
+
 .chip-separator {
   margin: 0 12px;
 }
 
-/* ==================== TABELA ==================== */
-.area-tabela {
-  margin: 30px auto;
-  padding: 40px;
-  background: #0f172a;
-  border-radius: 20px;
-  max-width: 90%;
-  color: #e2e8f0;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-.area-tabela p {
-  color: #94a3b8;
-  margin-bottom: 20px;
-}
-.tabela-deputado td ::ng-deep .destaca-texto {
-  background: #facc15;
-  color: #0f172a;
-  padding: 1px 3px;
-  border-radius: 3px;
-}
-
-.filtros-tabela {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
-  align-items: flex-start;
-}
-
-.filtros-tabela mat-form-field {
-  flex: 1;
-}
-
-.tabela-container {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  border-radius: 12px;
-}
-
-.tabela-deputado {
-  width: 100%;
-  border-collapse: collapse;
-  background: rgba(30, 41, 59, 0.5);
-  table-layout: fixed;
-}
-.tabela-deputado th {
-  padding: 22px;
-  text-align: left;
-  color: #75ea66;
-  font-weight: 600;
-  border-bottom: 2px solid #4ba259;
-  font-size: 1.4em;
-}
-.tabela-deputado td {
-  padding: 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  color: #cbd5e1;
-  font-size: 1.1em;
-  vertical-align: top;
-}
-.tabela-deputado tbody tr:hover {
-  background: rgba(75, 162, 89, 0.1);
-}
-
-/* Colunas fixas */
-.tabela-deputado th:nth-child(1),
-.tabela-deputado td:nth-child(1) {
-  width: 120px;
-}
-.tabela-deputado th:nth-child(2),
-.tabela-deputado td:nth-child(2) {
-  width: 80px;
-}
-.tabela-deputado th:nth-child(3),
-.tabela-deputado td:nth-child(3) {
-  width: 70px;
-}
-.tabela-deputado th:nth-child(4),
-.tabela-deputado td:nth-child(4) {
-  width: 95px;
-}
-
-.tabela-deputado td:nth-child(5) {
-  max-height: 200px;
-  overflow-y: auto;
-  display: block;
-  line-height: 1.6;
-}
-
-.paginacao {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
-  margin-top: 20px;
-}
-.paginacao button:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
-}
-.info-paginacao {
-  color: #94a3b8;
-}
-.filtro-texto {
-  display: flex;
-  gap: 15px;
-  align-items: flex-start;
-}
-.filtro-texto mat-form-field {
-  flex: 1;
-}
-
-/* ==================== TELEMOVELLL ==================== */
+/* ==================== TELEMOVEL ==================== */
 @media (max-width: 768px) {
   .base {
     padding: 20px;
   }
+
   .pesquisa {
     max-width: none;
     padding: 15px;
@@ -276,6 +176,7 @@ mat-form-field {
     flex-shrink: 0;
     padding: 0 20px;
   }
+
   .chip-separator {
     display: none;
   }
@@ -284,69 +185,10 @@ mat-form-field {
     font-size: 2.5em;
     word-break: break-word;
   }
+
   .area-resposta {
     max-width: 100%;
     padding: 20px;
     border-radius: 12px;
-  }
-
-  .area-tabela {
-    max-width: 100%;
-    padding: 15px;
-    border-radius: 12px;
-  }
-
-  .filtros-tabela {
-    flex-direction: column;
-  }
-  .filtros-tabela button {
-    width: 100%;
-    height: 48px !important;
-  }
-
-  .tabela-deputado th {
-    padding: 10px 6px;
-    font-size: 0.85em;
-  }
-  .tabela-deputado td {
-    padding: 8px 6px;
-    font-size: 0.85em;
-  }
-  .tabela-deputado th:nth-child(1),
-  .tabela-deputado td:nth-child(1) {
-    width: 70px;
-  }
-  .tabela-deputado th:nth-child(2),
-  .tabela-deputado td:nth-child(2) {
-    width: 45px;
-  }
-  .tabela-deputado th:nth-child(3),
-  .tabela-deputado td:nth-child(3) {
-    width: 40px;
-  }
-  .tabela-deputado th:nth-child(4),
-  .tabela-deputado td:nth-child(4) {
-    width: 70px;
-  }
-  .tabela-deputado td:nth-child(5) {
-    max-height: 150px;
-  }
-
-  .paginacao {
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-  
-  .paginacao button {
-    padding: 0 6px;
-    font-size: 0.85em;
-    min-width: auto;
-  }
-
-  .info-paginacao {
-    font-size: 0.85em;
-    width: 100%;
-    text-align: center;
-    order: -1;
   }
 }

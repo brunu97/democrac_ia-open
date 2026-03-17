@@ -1,42 +1,68 @@
 <mat-toolbar class="navbar">
   <div class="navbar-container">
-    <!-- Logo e Título -->
+    
     <div class="logo-section">
       <button mat-icon-button class="menu-mobile-btn" (click)="abrirFecharMenu()" aria-label="Menu">
         <mat-icon>menu</mat-icon>
       </button>
-
-      <a href="/" class="logo-link">
+      <a routerLink="/" class="logo-link">
         <span class="logo-text">Democrac_IA</span>
       </a>
+      
+      <!-- Funcionalidades -->
+      <nav class="nav-actions">
+        <a routerLink="/" routerLinkActive="nav-active" [routerLinkActiveOptions]="{exact: true}" class="nav-item">
+          <span>🔍 Pesquisa</span>
+        </a>
+        <a routerLink="/deputados" routerLinkActive="nav-active" class="nav-item">
+          <span>🏛️ Deputados</span>
+        </a>
+        <a routerLink="/noticias" routerLinkActive="nav-active" class="nav-item">
+          <span>📰 Notícias</span>
+        </a>
+        <!-- <a routerLink="/quiz" routerLinkActive="nav-active" class="nav-item">
+          <span>🎯 Quiz</span>
+        </a> -->
+      </nav>
     </div>
 
-    <!-- Menu Desktop -->
+    <!-- Menu - PC -->
     <nav class="nav-links">
-       <a href="/info/sobre" class="nav-item" rel="noopener">
+      <a routerLink="/info/sobre" routerLinkActive="nav-active" class="nav-item">
         <span>📍 Sobre</span>
       </a>
-      <a href="/info/como-funciona" class="nav-item" rel="noopener">
-        <span>⚙️ Como Funciona</span>
-      </a>
-      <a href="/info/como-usar" class="nav-item" rel="noopener">
+      <a routerLink="/info/como-usar" routerLinkActive="nav-active" class="nav-item">
         <span>❓ Como Usar</span>
+      </a>
+      <a routerLink="/info/como-funciona" routerLinkActive="nav-active" class="nav-item">
+        <span>⚙️ Como Funciona</span>
       </a>
     </nav>
   </div>
 </mat-toolbar>
 
-<!-- Menu Mobile -->
+<!-- Menu - Telemovel -->
 <div class="mobile-menu" [class.mobile-menu-open]="menuAberto">
   <nav class="mobile-nav">
-    <a href="/info/como-funciona" class="mobile-nav-item" rel="noopener">
+    <a routerLink="/" routerLinkActive="nav-active" [routerLinkActiveOptions]="{exact: true}" class="mobile-nav-item">
+      <span>Pesquisa</span>
+    </a>
+    <a routerLink="/deputados" routerLinkActive="nav-active" class="mobile-nav-item">
+      <span>Deputados</span>
+    </a>
+    <a routerLink="/noticias" routerLinkActive="nav-active" class="mobile-nav-item">
+      <span>Notícias</span>
+    </a>
+    <!-- <a routerLink="/quiz" routerLinkActive="nav-active" class="mobile-nav-item">
+      <span>Quiz</span>
+    </a> -->
+    <a routerLink="/info/como-funciona" routerLinkActive="nav-active" class="mobile-nav-item">
       <span>Como Funciona</span>
     </a>
-    <a href="/info/como-usar" class="mobile-nav-item" rel="noopener">
+    <a routerLink="/info/como-usar" routerLinkActive="nav-active" class="mobile-nav-item">
       <span>Como Usar</span>
     </a>
-
-     <a href="/info/sobre" class="mobile-nav-item" rel="noopener">
+    <a routerLink="/info/sobre" routerLinkActive="nav-active" class="mobile-nav-item">
       <span>Sobre</span>
     </a>
   </nav>

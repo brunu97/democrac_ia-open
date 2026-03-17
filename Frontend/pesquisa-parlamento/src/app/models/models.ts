@@ -24,6 +24,15 @@ export interface Fontes {
  
 }
 
+export interface QuizPergunta {
+  citacao: string;
+  opcoes: string[];
+  correto: string;
+  data: string;
+  fonte: string;
+  pagina: number;
+}
+
 export enum ModoPesquisa {
   PESQUISA = 'pesquisa',
   EXPLICATIVO = 'explicativo',

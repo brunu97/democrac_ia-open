@@ -1,0 +1,71 @@
+<div class="base">
+  <div class="header">
+    <h1>Quem disse?</h1>
+    <p class="subtitle">Adivinha o deputado!</p>
+  </div>
+  @if (estado$ | async; as estado) {
+    @if (estado.loading) {
+      <div class="loading-box">
+        <div class="spinner"></div>
+        <p>A carregar...</p>
+      </div>
+    }
+    @if (estado.erro && !estado.loading) {
+      <div class="erro-box">
+        <p>{{ estado.erro }}</p>
+        <button mat-stroked-button (click)="carregarPergunta()">Tentar novamente</button>
+      </div>
+    }
+    @if (!estado.loading && !estado.erro && estado.pergunta) {
+      <div class="quiz-card">
+        <div class="citacao">
+          <p>{{ estado.pergunta.citacao }}</p>
+        </div>
+        <div class="opcoes">
+          @for (opcao of estado.pergunta.opcoes; track opcao) {
+            <button
+              [class]="getClasse(opcao, estado.pergunta.correto, estado.selecionado)"
+              (click)="selecionar(opcao)"
+              [disabled]="!!estado.selecionado"
+            >
+              {{ opcao }}
+            </button>
+          }
+        </div>
+        @if (!estado.selecionado) {
+          <div class="desistir">
+            <button mat-stroked-button (click)="desistir()">Desistir</button>
+          </div>
+        }
+        @if (estado.selecionado) {
+          <div
+            class="resultado"
+            [class.acertou]="estado.selecionado === estado.pergunta.correto"
+            [class.desistiu]="estado.selecionado === '__desistiu__'"
+          >
+            @if (estado.selecionado === estado.pergunta.correto) {
+              <span>✅ Correto!</span>
+            } @else {
+              <span
+                >🏳️ Era <strong>{{ estado.pergunta.correto }}</strong></span
+              >
+            }
+          </div>
+          <div class="fonte-info">
+            <a
+              class="fonte-link"
+              [href]="gerarLink(estado.pergunta.fonte, estado.pergunta.pagina)"
+              target="_blank"
+              rel="noopener"
+              >🔗 Fonte</a
+            >
+            <span class="fonte-sep">·</span>{{ estado.pergunta.data }}
+          </div>
+          <div class="proxima">
+            <button mat-flat-button (click)="carregarPergunta()">Próxima frase</button>
+          </div>
+        }
+      </div>
+    }
+  }
+</div>

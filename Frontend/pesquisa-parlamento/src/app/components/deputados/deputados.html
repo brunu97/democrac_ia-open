@@ -1,0 +1,195 @@
+<div class="base">
+  <div class="header">
+    <h1>Deputados</h1>
+    <p class="subtitle">Intervenções parlamentares por deputado</p>
+  </div>
+
+  @if (estado$ | async; as estado) {
+    <div class="pesquisa">
+      <mat-form-field appearance="outline" class="deputados-lista">
+        <mat-label>Pesquisar deputado</mat-label>
+        <input
+          [disabled]="estado.loading"
+          type="text"
+          placeholder="Escreva um nome..."
+          aria-label="Nome"
+          matInput
+          [matAutocomplete]="auto"
+          (input)="filtrarDeputados($event)"
+        />
+        <mat-autocomplete
+          autoActiveFirstOption
+          #auto="matAutocomplete"
+          (optionSelected)="onDeputadoSelecionado($event)"
+        >
+          @for (deputado of deputadosFiltrados; track deputado) {
+            <mat-option [value]="deputado.nome">{{ deputado.nome }}</mat-option>
+          }
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <div class="info-cards">
+        <div class="info-card">
+          <span class="info-icon">📄</span>
+          <span
+            >Dados sem têm qualquer tipo de tratamento, formatação ou correção de erros, diretamente
+            dos documentos oficiais. Deputados com o mesmo nome são distinguidos pelo partido
+          </span>
+
+          <span
+            >Nos documentos, o nome dos primeiros-ministros nunca é referido, sendo apenas
+            identificado como "Sr. Primeiro-Ministro", portanto essas intervenções não foram
+            associadas a nenhum deputado.</span
+          >
+        </div>
+        <div class="info-card">
+          <span class="info-icon">🔍</span>
+          <span>Filtre por texto ou data após selecionar um deputado</span>
+        </div>
+      </div>
+
+       <a routerLink="/quiz" class="quiz-banner">
+        <span class="quiz-banner-icon">🎯</span>
+        <div class="quiz-banner-texto">
+          <strong>Achas que conheces os deputados?</strong>
+          <span>Testa os teus conhecimentos, consegues adivinhar quem disse o quê?</span>
+        </div>
+        <span class="quiz-banner-seta">→</span>
+      </a>
+    </div>
+
+    <!-- Erro -->
+    @if (estado.erro && !estado.loading) {
+      <div class="area-resposta erro-box">
+        <p>⚠️ {{ estado.erro }}</p>
+      </div>
+    }
+
+    <!-- Loading -->
+    @if (estado.loading) {
+      <div class="area-resposta">
+        <div class="spinner"></div>
+        <p style="text-align: center; font-size: larger">💿 A processar...</p>
+      </div>
+    }
+
+    <!-- Tabela dos deputados -->
+    @if (estado.tabela && !estado.loading) {
+      <div class="area-tabela">
+        <h1>Intervenções de {{ deputadoSelecionado }}</h1>
+        <p>Total: {{ estado.tabela.total }} intervenções</p>
+
+        <!-- Filtros -->
+        <div class="filtros-tabela">
+          <mat-form-field appearance="outline" style="flex: 2">
+            <mat-label>Pesquisar no texto</mat-label>
+            <input matInput [(ngModel)]="filtroTexto" (keyup.enter)="pesquisarTexto()" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" style="flex: 1">
+            <mat-label>Data Início</mat-label>
+            <input
+              matInput
+              [matDatepicker]="pickerInicio"
+              [(ngModel)]="dataInicio"
+              placeholder="DD/MM/AAAA"
+              [disabled]="estado.loading"
+            />
+            <mat-datepicker-toggle matIconSuffix [for]="pickerInicio"></mat-datepicker-toggle>
+            <mat-datepicker #pickerInicio></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" style="flex: 1">
+            <mat-label>Data Fim</mat-label>
+            <input
+              matInput
+              [matDatepicker]="pickerFim"
+              [(ngModel)]="dataFim"
+              placeholder="DD/MM/AAAA"
+              [disabled]="estado.loading"
+            />
+            <mat-datepicker-toggle matIconSuffix [for]="pickerFim"></mat-datepicker-toggle>
+            <mat-datepicker #pickerFim></mat-datepicker>
+          </mat-form-field>
+
+          <button
+            mat-flat-button
+            class="botao-filtrar"
+            (click)="pesquisarTexto()"
+            style="height: 56px"
+          >
+            Filtrar
+          </button>
+
+          <button
+            mat-button
+            color="warn"
+            (click)="limparFiltros()"
+            [disabled]="estado.loading || (!dataInicio && !dataFim && !filtroTexto)"
+            style="height: 56px"
+          >
+            <mat-icon>clear</mat-icon>
+            Limpar
+          </button>
+        </div>
+
+        <div class="tabela-container">
+          <table class="tabela-deputado">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Partido</th>
+                <th>Arquivo</th>
+                <th>Data</th>
+                <th>Texto</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of estado.tabela.dados; track $index) {
+                <tr>
+                  <td>{{ item.nome }}</td>
+                  <td>{{ item.partido }}</td>
+                  <td>
+                    <a
+                      class="font-link"
+                      [href]="gerarLink(item.ficheiro) + '/' + item.pagina"
+                      target="_blank"
+                    >
+                      🔗 PDF
+                    </a>
+                  </td>
+                  <td>{{ item.data }}</td>
+                  <td [innerHTML]="item.texto | selecionado: filtroTexto"></td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <div class="paginacao">
+          <button mat-button (click)="primeiraPagina()" [disabled]="!temAnterior">
+            <mat-icon>first_page</mat-icon>
+            Primeira
+          </button>
+          <button mat-button (click)="paginaAnterior()" [disabled]="estado.tabela.offset === 0">
+            <mat-icon>chevron_left</mat-icon>
+            Anterior
+          </button>
+          <span class="info-paginacao">
+            {{ estado.tabela.offset + 1 }} -
+            {{ estado.tabela.offset + estado.tabela.dados.length }} de
+            {{ estado.tabela.total }}
+          </span>
+          <button mat-button (click)="proximaPagina()" [disabled]="!estado.tabela.tem_mais_paginas">
+            Próxima
+            <mat-icon>chevron_right</mat-icon>
+          </button>
+          <button mat-button (click)="ultimaPagina()" [disabled]="!temProxima">
+            Última
+            <mat-icon>last_page</mat-icon>
+          </button>
+        </div>
+      </div>
+    }
+  }
+</div>

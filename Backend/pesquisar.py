@@ -8,6 +8,7 @@ import config
 import re
 from sentence_transformers import SentenceTransformer
 from groq import Groq
+import random
 
 
 class Pesquisar:
@@ -92,6 +93,29 @@ class Pesquisar:
             'limit': 15,
             'tem_mais_paginas': (offset + 15) < total
         }
+
+    def obtem_quiz(self):
+        cursor = self._get_conn().cursor()
+
+        # Escolhe deputado qualquer que esteja no top das intervenções
+        cursor.execute('''SELECT nome FROM intervencoes WHERE LENGTH(texto) > 10 AND LENGTH(texto) <= 700 GROUP BY nome ORDER BY COUNT(*) DESC LIMIT 30''')
+        deputados = [row['nome'] for row in cursor.fetchall()]
+
+        correto = random.choice(deputados)
+
+        cursor.execute('''SELECT texto, data, ficheiro, pagina FROM intervencoes WHERE nome = ? AND LENGTH(texto) > 10 AND LENGTH(texto) <= 700 ORDER BY RANDOM() LIMIT 1''', (correto,))
+        row = cursor.fetchone()
+
+        fonte = row['ficheiro']
+        data = row['data']
+        texto = row['texto']
+        pagina = row['pagina']
+
+        errados = random.sample([d for d in deputados if d != correto], 2) # Obtem 2 outros quaisqueres que estão errados para as opções
+        opcoes = [correto] + errados
+        random.shuffle(opcoes)
+
+        return { 'citacao': texto, 'opcoes': opcoes, 'correto': correto, 'data': data, 'fonte': fonte, 'pagina': pagina }
 
     def pesquisa(self, query, modo="pesquisa", anos=None, incluir_contexto_adjacente=True, top_n_com_contexto=3):
         config_prompt = prompt.get_prompt_config(modo)

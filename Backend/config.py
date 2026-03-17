@@ -4,7 +4,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 VECTOR_PATH = os.path.join(BASE_DIR, "base_dados")
 
-GROQ_KEY = "CHAVE_GROQ"
+GROQ_KEY = "GROQ_KEY"
 
 EMBED_MODEL = "BAAI/bge-m3"
 MODEL_SIMPLES = "llama-3.1-8b-instant"
@@ -14,6 +14,8 @@ MODEL_AVANCADO_2 = "meta-llama/llama-4-scout-17b-16e-instruct"
 MODEL_AVANCADO_3 = "llama-3.3-70b-versatile"
 
 MODOS_VALIDOS = {'pesquisa', 'explicativo', 'imaginativo', 'simples', 'constituicao'}
+
+NOTICIAS_FICHEIRO = os.path.join(VECTOR_PATH, "noticias.json")
 
 class PesquisaRequest:
     def __init__(self, data):

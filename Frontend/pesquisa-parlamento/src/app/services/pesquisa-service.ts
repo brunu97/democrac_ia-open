@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { PesquisaRequest, PesquisaResultado, TabelaRequest } from '../models/models';
+import { PesquisaRequest, PesquisaResultado, QuizPergunta, TabelaRequest } from '../models/models';
 
 @Injectable({
   providedIn: 'root'
@@ -21,5 +21,13 @@ export class PesquisaService {
   
   get_tabela(nome: TabelaRequest): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/tabela`, nome);
+  }
+
+  get_noticias(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/noticias`);
+  }
+
+  get_quiz(): Observable<QuizPergunta> {
+    return this.http.get<QuizPergunta>(`${this.apiUrl}/quiz`);
   }
 }
