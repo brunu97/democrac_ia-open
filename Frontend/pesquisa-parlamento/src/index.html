@@ -2,16 +2,16 @@
 <html lang="pt">
   <head>
     <meta charset="utf-8" />
-    <title>Democrac_IA</title>
+    <title>Democrac_IA - Pesquisa de Debates Parlamentares com IA</title>
     <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="O Democrac_IA é uma ferramenta de pesquisa que utiliza IA para analisar debates da Assembleia da República Portuguesa."
+      content="Pesquisa debates e intervenções da Assembleia da República Portuguesa com Inteligência Artificial. Consulta deputados, notícias de política e a Constituição Portuguesa."
     />
     <meta
       name="keywords"
-      content="parlamento, debates, portugal, assembleia república, deputados, constituição, política, IA, inteligência artificial"
+      content="assembleia da república, parlamento português, debates parlamentares, deputados portugal, política portuguesa, inteligência artificial política, notícias política portugal, constituição portuguesa, pesquisa parlamentar IA, intervenções deputados, parlamento IA, democracia portugal"
     />
     <meta name="author" content="Democrac_IA" />
     <meta name="robots" content="index, follow" />
@@ -19,20 +19,27 @@
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Democrac_IA - O Parlamento em IA" />
+    <meta property="og:title" content="Democrac_IA - O Parlamento Português com IA" />
     <meta
       property="og:description"
-      content="Pesquisa debates parlamentares de Portugal com Inteligência Artificial."
+      content="Pesquisa debates e intervenções da Assembleia da República com IA. Notícias de política portuguesa em tempo real, consulta de deputados e muito mais."
     />
     <meta property="og:url" content="https://www.democrac-ia.pt/" />
     <meta property="og:site_name" content="Democrac_IA" />
     <meta property="og:locale" content="pt_PT" />
+    <meta property="og:image" content="https://www.democrac-ia.pt/fundo.JPG" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Democrac_IA - Pesquisa de Debates Parlamentares com Inteligência Artificial" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Democrac_IA - O Parlamento Português com IA" />
+    <meta name="twitter:description" content="Pesquisa debates e intervenções da Assembleia da República com IA." />
+    <meta name="twitter:image" content="https://www.democrac-ia.pt/fundo.JPG" />
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
-    <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -43,14 +50,46 @@
     />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 
-    <!-- Structured Data -->
+    <!-- Structured Data: WebSite com SearchAction -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Democrac_IA",
+        "url": "https://www.democrac-ia.pt",
+        "description": "Pesquisa debates e intervenções da Assembleia da República Portuguesa com Inteligência Artificial.",
+        "inLanguage": "pt-PT",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "https://www.democrac-ia.pt/?q={search_term_string}"
+          },
+          "query-input": "required name=search_term_string"
+        }
+      }
+    </script>
+
+    <!-- Structured Data: Organization -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Democrac_IA",
+        "url": "https://www.democrac-ia.pt",
+        "logo": "https://www.democrac-ia.pt/favicon.ico",
+        "sameAs": []
+      }
+    </script>
+
+    <!-- Structured Data: WebApplication -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "WebApplication",
-        "name": "Democrac_IA",
+        "name": "Democrac_IA - Pesquisa Parlamentar com IA",
         "url": "https://www.democrac-ia.pt",
-        "description": "Ferramenta de pesquisa e analisa os debates da Assembleia da República Portuguesa com Inteligência Artificial.",
+        "description": "Ferramenta gratuita que usa Inteligência Artificial para pesquisar e analisar debates da Assembleia da República Portuguesa, consultar intervenções de deputados e acompanhar notícias de política portuguesa.",
         "applicationCategory": "ReferenceApplication",
         "operatingSystem": "Web",
         "inLanguage": "pt-PT",
@@ -63,11 +102,13 @@
           "price": "0",
           "priceCurrency": "EUR"
         },
+        "keywords": "assembleia república, parlamento português, debates parlamentares, deputados, política portuguesa, inteligência artificial, notícias política",
         "featureList": [
           "Pesquisa de debates parlamentares com IA",
           "Consulta de intervenções por deputado",
-          "Pesquisa da Constituição Portuguesa",
-          "Notícias políticas em tempo real",
+          "Base de dados de deputados desde 2006",
+          "Pesquisa da Constituição Portuguesa com IA",
+          "Notícias de política portuguesa em tempo real com resumo IA",
           "Quiz parlamentar interativo"
         ]
       }

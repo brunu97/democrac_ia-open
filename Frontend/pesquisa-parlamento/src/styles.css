@@ -1,15 +1,16 @@
 html, body {
   height: 100%;
+  scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 
-  /* fundo principal */
-
   position: relative;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body::after {
@@ -18,16 +19,15 @@ body::after {
   inset: 0;
   background: linear-gradient(
     180deg,
-    #1f2d4e 0%,
-    #1f2d4d 50%,
-    #0f172a 100%
+    #15243a 0%,
+    #192a40 50%,
+    #0d1525 100%
   );
   z-index: -2;
   pointer-events: none;
 }
 
-/* marca d’água no fundo */
-/* imagem de fundo com fade 360º */
+/* marca d'água no fundo */
 body::before {
   content: "";
   position: fixed;
@@ -57,7 +57,8 @@ body::before {
   background-size: cover;
 
   filter: grayscale(100%);
-  opacity: 0.02;
+  opacity: 0.05;
 
   pointer-events: none;
+  z-index: -1;
 }

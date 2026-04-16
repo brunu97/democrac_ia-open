@@ -14,6 +14,7 @@
           placeholder="Escreva um nome..."
           aria-label="Nome"
           matInput
+          [(ngModel)]="filtroNome"
           [matAutocomplete]="auto"
           (input)="filtrarDeputados($event)"
         />
@@ -147,9 +148,9 @@
             <tbody>
               @for (item of estado.tabela.dados; track $index) {
                 <tr>
-                  <td>{{ item.nome }}</td>
-                  <td>{{ item.partido }}</td>
-                  <td>
+                  <td data-label="Nome">{{ item.nome }}</td>
+                  <td data-label="Partido">{{ item.partido }}</td>
+                  <td data-label="Arquivo">
                     <a
                       class="font-link"
                       [href]="gerarLink(item.ficheiro) + '/' + item.pagina"
@@ -158,8 +159,8 @@
                       🔗 PDF
                     </a>
                   </td>
-                  <td>{{ item.data }}</td>
-                  <td [innerHTML]="item.texto | selecionado: filtroTexto"></td>
+                  <td data-label="Data">{{ item.data }}</td>
+                  <td data-label="Texto" [innerHTML]="item.texto | selecionado: filtroTexto"></td>
                 </tr>
               }
             </tbody>

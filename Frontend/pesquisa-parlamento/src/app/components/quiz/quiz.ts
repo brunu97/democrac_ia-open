@@ -34,13 +34,14 @@ export class Quiz implements OnInit {
     private meta: Meta,
     private title: Title,
   ) {
-    this.title.setTitle('Democrac_IA - Quiz Parlamentar');
-    this.meta.updateTag({ name: 'description', content: 'Quiz interativo: adivinha qual deputado disse esta frase no parlamento português. Testa os teus conhecimentos sobre a política e os deputados da Assembleia da República.' });
-    this.meta.updateTag({ property: 'og:title', content: 'Democrac_IA - Quiz Parlamentar' });
-    this.meta.updateTag({ property: 'og:description', content: 'Quiz interativo: adivinha qual deputado disse esta frase no parlamento português.' });
+    this.title.setTitle('Quiz Parlamentar - Conheces os Deputados Portugueses? | Democrac_IA');
+    this.meta.updateTag({ name: 'description', content: 'Quiz interativo sobre política portuguesa: adivinha qual deputado disse esta frase no parlamento. Testa os teus conhecimentos sobre os deputados da Assembleia da República.' });
+    this.meta.updateTag({ property: 'og:title', content: 'Quiz Parlamentar - Conheces os Deputados Portugueses? | Democrac_IA' });
+    this.meta.updateTag({ property: 'og:description', content: 'Quiz interativo: adivinha qual deputado disse esta frase no parlamento português. Testa os teus conhecimentos sobre política portuguesa.' });
     this.meta.updateTag({ property: 'og:url', content: 'https://www.democrac-ia.pt/quiz' });
-    this.meta.updateTag({ name: 'twitter:title', content: 'Democrac_IA - Quiz Parlamentar' });
-    this.meta.updateTag({ name: 'twitter:description', content: 'Quiz interativo: adivinha qual deputado disse esta frase no parlamento português.' });
+    this.meta.updateTag({ name: 'twitter:card', content: 'summary_large_image' });
+    this.meta.updateTag({ name: 'twitter:title', content: 'Quiz Parlamentar - Conheces os Deputados Portugueses? | Democrac_IA' });
+    this.meta.updateTag({ name: 'twitter:description', content: 'Adivinha qual deputado disse esta frase no parlamento. Testa os teus conhecimentos sobre política portuguesa.' });
     this.meta.updateTag({ name: 'robots', content: 'index, follow' });
   }
 

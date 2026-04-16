@@ -44,16 +44,17 @@ export class Noticias implements OnInit {
     private meta: Meta,
     private title: Title,
   ) {
-    this.title.setTitle('Democrac_IA - Notícias de Política Portuguesa');
+    this.title.setTitle('Notícias de Política Portuguesa com IA | Democrac_IA');
     this.meta.updateTag({
       name: 'description',
-      content: 'Notícias em tempo real sobre política portuguesa com resumo gerado por IA. Atualizado a cada 2 horas com as principais fontes de notícias portuguesas.',
+      content: 'Notícias de política portuguesa em tempo real com resumo gerado por Inteligência Artificial. Assembleia da República, governo e partidos. Atualizado a cada 2 horas.',
     });
-    this.meta.updateTag({ property: 'og:title', content: 'Democrac_IA - Notícias de Política Portuguesa' });
-    this.meta.updateTag({ property: 'og:description', content: 'Notícias em tempo real sobre política portuguesa com resumo gerado por IA. Atualizado a cada 2 horas.' });
+    this.meta.updateTag({ property: 'og:title', content: 'Notícias de Política Portuguesa com IA | Democrac_IA' });
+    this.meta.updateTag({ property: 'og:description', content: 'Notícias de política portuguesa em tempo real com resumo gerado por IA. Assembleia da República, governo e partidos. Atualizado a cada 2 horas.' });
     this.meta.updateTag({ property: 'og:url', content: 'https://www.democrac-ia.pt/noticias' });
-    this.meta.updateTag({ name: 'twitter:title', content: 'Democrac_IA - Notícias de Política Portuguesa' });
-    this.meta.updateTag({ name: 'twitter:description', content: 'Notícias em tempo real sobre política portuguesa com resumo gerado por IA. Atualizado a cada 2 horas.' });
+    this.meta.updateTag({ name: 'twitter:card', content: 'summary_large_image' });
+    this.meta.updateTag({ name: 'twitter:title', content: 'Notícias de Política Portuguesa com IA | Democrac_IA' });
+    this.meta.updateTag({ name: 'twitter:description', content: 'Notícias de política portuguesa em tempo real com resumo por IA. Assembleia da República, governo e partidos. Atualizado de 2 em 2 horas.' });
     this.meta.updateTag({ name: 'robots', content: 'index, follow' });
   }
 

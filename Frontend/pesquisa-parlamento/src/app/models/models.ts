@@ -14,7 +14,7 @@ export interface PesquisaRequest {
 }
 
 export interface TabelaRequest {
-  nome: string;
+  id: number;
   offset: number;
   texto?: string;
   data_inicio?: string;

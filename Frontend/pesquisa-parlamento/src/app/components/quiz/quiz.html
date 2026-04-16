@@ -44,10 +44,10 @@
             [class.desistiu]="estado.selecionado === '__desistiu__'"
           >
             @if (estado.selecionado === estado.pergunta.correto) {
-              <span>✅ Correto!</span>
+              <span>Correto!</span>
             } @else {
               <span
-                >🏳️ Era <strong>{{ estado.pergunta.correto }}</strong></span
+                >Era <strong>{{ estado.pergunta.correto }}</strong></span
               >
             }
           </div>

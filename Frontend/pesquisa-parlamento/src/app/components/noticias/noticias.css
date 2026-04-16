@@ -61,6 +61,8 @@
   backdrop-filter: blur(4px);
   position: sticky;
   top: 24px;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
 }
 
 .resumo-topo {
@@ -147,6 +149,8 @@
   grid-template-columns: repeat(2, 1fr);
   gap: 4px;
   align-content: start;
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
 }
 
 .item {
@@ -222,9 +226,11 @@
   .resumo-destaque {
     padding: 20px;
     position: static;
+    max-height: none;
   }
 
   .noticias-grid {
     grid-template-columns: 1fr;
+    max-height: none;
   }
 }

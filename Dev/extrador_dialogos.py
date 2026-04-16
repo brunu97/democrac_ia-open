@@ -80,6 +80,7 @@ def processar_pdf(pdf_path):
 if __name__ == "__main__":
     conn = sqlite3.connect(DB)
     conn.execute("DROP TABLE IF EXISTS intervencoes")
+    conn.execute("DROP TABLE IF EXISTS deputados")
     conn.execute("""CREATE TABLE intervencoes (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nome TEXT,
@@ -88,6 +89,10 @@ if __name__ == "__main__":
         ficheiro TEXT,
         pagina INTEGER,
         data DATE
+    )""")
+    conn.execute("""CREATE TABLE deputados (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nome TEXT UNIQUE NOT NULL
     )""")
     conn.commit()
 
@@ -103,5 +108,14 @@ if __name__ == "__main__":
                     "INSERT INTO intervencoes VALUES (NULL,?,?,?,?,?,?)",
                     resultados)
                 conn.commit()
+
+    print("A popular tabela de deputados...")
+    conn.execute("""
+        INSERT INTO deputados (nome)
+        SELECT DISTINCT nome FROM intervencoes
+        WHERE nome IS NOT NULL
+        ORDER BY nome
+    """)
+    conn.commit()
 
     conn.close()

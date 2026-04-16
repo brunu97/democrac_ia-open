@@ -59,17 +59,18 @@ export class Pesquisa {
     private meta: Meta,
     private title: Title,
   ) {
-    this.title.setTitle('Democrac_IA - Pesquisa Debates Parlamentares com IA');
+    this.title.setTitle('Democrac_IA - Pesquisa Debates da Assembleia da República com IA');
     this.meta.updateTag({
       name: 'description',
-      content: 'Pesquisa debates parlamentares de Portugal com IA. Analisa intervenções e deputados da Assembleia da República.',
+      content: 'Pesquisa debates e intervenções da Assembleia da República Portuguesa com Inteligência Artificial. Analisa o que os deputados disseram sobre qualquer tema político.',
     });
-    this.meta.updateTag({ property: 'og:title', content: 'Democrac_IA - Pesquisa Debates Parlamentares com IA' });
-    this.meta.updateTag({ property: 'og:description', content: 'Pesquisa debates parlamentares de Portugal com IA.' });
+    this.meta.updateTag({ property: 'og:title', content: 'Democrac_IA - Pesquisa Debates da Assembleia da República com IA' });
+    this.meta.updateTag({ property: 'og:description', content: 'Pesquisa debates e intervenções da Assembleia da República Portuguesa com Inteligência Artificial. Analisa o que os deputados disseram sobre qualquer tema político.' });
     this.meta.updateTag({ property: 'og:type', content: 'website' });
     this.meta.updateTag({ property: 'og:url', content: 'https://www.democrac-ia.pt/' });
-    this.meta.updateTag({ name: 'twitter:title', content: 'Democrac_IA - Pesquisa Debates Parlamentares com IA' });
-    this.meta.updateTag({ name: 'twitter:description', content: 'Pesquisa debates parlamentares de Portugal com IA.' });
+    this.meta.updateTag({ name: 'twitter:card', content: 'summary_large_image' });
+    this.meta.updateTag({ name: 'twitter:title', content: 'Democrac_IA - Pesquisa Debates da Assembleia da República com IA' });
+    this.meta.updateTag({ name: 'twitter:description', content: 'Pesquisa debates e intervenções da Assembleia da República com IA. O que disseram os deputados sobre qualquer tema político.' });
     this.meta.updateTag({ name: 'robots', content: 'index, follow' });
   }
 

@@ -12,6 +12,7 @@ import { Quiz } from './components/quiz/quiz';
 export const routes: Routes = [
     { path: '', component: Pesquisa },
     { path: 'deputados', component: Deputados },
+    { path: 'deputados/:id', component: Deputados },
     { path: 'noticias', component: Noticias },
     { path: 'quiz', component: Quiz },
     { path: 'info/como-usar', component: ComoUsar },

@@ -46,8 +46,19 @@ class Pesquisar:
 
     def get_oradores_lista(self):
         cursor = self._get_conn().cursor()
-        cursor.execute('''SELECT DISTINCT nome FROM intervencoes ORDER BY nome''')
+        cursor.execute('''SELECT id, nome FROM deputados ORDER BY nome''')
         return [dict(row) for row in cursor.fetchall()]
+
+    def get_deputado_by_id(self, deputado_id, offset=0, texto=None, data_inicio=None, data_fim=None):
+        cursor = self._get_conn().cursor()
+        cursor.execute('SELECT nome FROM deputados WHERE id = ?', (deputado_id,))
+        row = cursor.fetchone()
+        if not row:
+            return None
+        nome = row['nome']
+        resultado = self.get_deputado(nome, offset, texto, data_inicio, data_fim)
+        resultado['nome_deputado'] = nome
+        return resultado
 
     def get_deputado(self, nome, offset=0, texto=None, data_inicio=None, data_fim=None):
         cursor = self._get_conn().cursor()

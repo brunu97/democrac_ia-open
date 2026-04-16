@@ -10,30 +10,35 @@
 }
 
 .header h1 {
-  font-size: 5.5em;
-  margin-bottom: 25px;
+  font-size: 5.2em;
+  margin-bottom: 16px;
   font-weight: 700;
+  letter-spacing: -1px;
+  color: #f1f5f9;
 }
 
 .subtitle {
   font-size: 1.1em;
-  opacity: 0.9;
+  color: #94a3b8;
 }
 
 .pesquisa {
   margin: 0 auto;
-  max-width: 850px;
-  background: #0f172a;
+  max-width: 860px;
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   color: #e2e8f0;
-  padding: 30px;
+  padding: 28px 32px;
   border-radius: 20px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-  margin-bottom: 30px;
+  box-shadow: 0 4px 28px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 28px;
 }
 
 .pergunta {
   display: flex;
-  gap: 15px;
+  gap: 12px;
   align-items: flex-start;
 }
 
@@ -43,41 +48,45 @@ mat-form-field {
 
 .botao-pesquisar {
   height: 56px;
-  padding: 0 35px;
+  padding: 0 32px;
   font-size: 1em;
   border-radius: 12px;
   color: white;
 }
 
+/* ==================== RESPOSTA ==================== */
 .area-resposta {
   margin: 0 auto;
-  padding: 40px;
-  background: #0f172a;
+  padding: 36px 40px;
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border-radius: 20px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 28px rgba(0, 0, 0, 0.4);
   max-width: 80%;
   color: #e2e8f0;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .pergunta-a-resposta {
-  background: rgba(30, 41, 59, 0.7);
-  padding: 15px 25px;
-  border-radius: 12px;
-  border-left: 4px solid #75ea66;
-  margin-bottom: 30px;
+  background: rgba(30, 41, 59, 0.6);
+  padding: 14px 22px;
+  border-radius: 10px;
+  border-left: 3px solid #4be464;
+  margin-bottom: 24px;
   color: #94a3b8;
-  font-size: 16px;
+  font-size: 15px;
+  line-height: 1.65;
 }
 
 .resposta {
-  background: rgba(255, 255, 255, 0.05);
-  color: #ffffff;
-  padding: 25px;
+  background: rgba(255, 255, 255, 0.04);
+  color: #e2e8f0;
+  padding: 24px 28px;
   border-radius: 12px;
-  border-left: 4px solid #ea6666;
-  margin-bottom: 30px;
-  line-height: 1.8;
+  border-left: 3px solid #ea6666;
+  margin-bottom: 28px;
+  line-height: 1.85;
   font-size: 16px;
 }
 
@@ -90,91 +99,102 @@ mat-form-field {
 }
 
 .toggle-hint {
-  font-size: 16px;
+  font-size: 15px;
   color: #fd5a5a;
   font-style: italic;
 }
 
+/* ==================== SPINNER ==================== */
 .spinner {
-  width: 50px;
-  height: 50px;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #4be464;
+  width: 48px;
+  height: 48px;
+  border: 3px solid rgba(255, 255, 255, 0.07);
+  border-top: 3px solid #4be464;
   border-radius: 50%;
-  animation: spin 1s linear infinite;
+  animation: spin 0.85s linear infinite;
   margin: 0 auto 20px;
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  to { transform: rotate(360deg); }
 }
 
+/* ==================== FONTES / FONTES ==================== */
 .fonte-card {
-  background: #1e293b !important;
+  background: rgba(30, 41, 59, 0.7) !important;
   color: #cbd5e1 !important;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  margin-bottom: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  margin-bottom: 12px;
+  border-radius: 12px !important;
 }
 
 .font-link {
   color: #60a5fa;
   font-weight: 600;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.font-link:hover {
+  color: #93c5fd;
 }
 
 .fonte-header {
   display: flex;
-  gap: 15px;
+  gap: 12px;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   flex-wrap: wrap;
 }
 
 .fonte-rank {
   background: #4ba259;
   color: white;
-  padding: 4px 12px;
-  border-radius: 12px;
-  font-size: 1.5em;
+  padding: 3px 12px;
+  border-radius: 20px;
+  font-size: 1.35em;
+  font-weight: 600;
 }
 
 .fonte-score {
-  color: #1e40af;
+  color: #93c5fd;
   font-weight: 600;
-  background: #dbeafe;
-  padding: 4px 10px;
+  background: rgba(147, 197, 253, 0.1);
+  padding: 3px 10px;
   border-radius: 8px;
-  font-size: 0.9em;
+  font-size: 0.88em;
 }
 
 .fonte-content {
-  margin: 15px 0;
-  line-height: 1.6;
+  margin: 12px 0;
+  line-height: 1.65;
+  color: #cbd5e1;
 }
 
 .chip-separator {
   margin: 0 12px;
+  color: #475569;
 }
 
 /* ==================== TELEMOVEL ==================== */
 @media (max-width: 768px) {
   .base {
-    padding: 20px;
+    padding: 16px;
   }
 
   .pesquisa {
     max-width: none;
-    padding: 15px;
+    padding: 16px;
   }
 
   .pergunta {
     flex-direction: row;
-    gap: 10px;
+    gap: 8px;
   }
 
   .botao-pesquisar {
     flex-shrink: 0;
-    padding: 0 20px;
+    padding: 0 16px;
   }
 
   .chip-separator {
@@ -182,13 +202,14 @@ mat-form-field {
   }
 
   .header h1 {
-    font-size: 2.5em;
+    font-size: 2.6em;
     word-break: break-word;
+    letter-spacing: -0.5px;
   }
 
   .area-resposta {
     max-width: 100%;
     padding: 20px;
-    border-radius: 12px;
+    border-radius: 14px;
   }
 }

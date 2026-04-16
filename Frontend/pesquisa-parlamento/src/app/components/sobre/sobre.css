@@ -2,58 +2,76 @@
   max-width: 1400px;
   margin: 0 auto;
   padding: 1rem;
-  font-family: Arial, sans-serif;
-  color: #333;
-  line-height: 1.5;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  color: #e2e8f0;
+  line-height: 1.65;
 }
+
 .topo-titulo {
-    text-align: center;
-    margin-bottom: 50px;
-    color: white;
+  text-align: center;
+  margin-bottom: 50px;
+  color: white;
 }
+
 .topo-titulo h1 {
   margin: 0;
   font-size: 4rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  letter-spacing: -0.5px;
 }
+
 .secao {
   margin-bottom: 2rem;
 }
+
 .secao h2 {
   font-size: 1.7rem;
   margin-bottom: 1rem;
-  color: #ffffff;
-  border-bottom: 2px solid #93b0c4;
+  color: #f1f5f9;
+  border-bottom: 2px solid rgba(75, 228, 100, 0.3);
   padding-bottom: 0.5rem;
 }
+
 .cartao {
-  background: #0f172a; 
-  color: #e2e8f0; 
-  border-radius: 4px;
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #e2e8f0;
+  border-radius: 16px;
   padding: 2rem;
   margin-bottom: 1rem;
-  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
+
 .cartao h3 {
   margin-top: 0;
   font-size: 1.3rem;
-  color: #dcdcee;
+  color: #f1f5f9;
+  font-weight: 600;
 }
+
 ul {
   margin: 0.5rem 0;
   padding-left: 1.5rem;
 }
+
 li {
   margin-bottom: 0.5rem;
+  color: #cbd5e1;
 }
+
 p {
-  font-size: 15px;
+  font-size: 17px;
+  color: #cbd5e1;
 }
+
 img {
-  background-color: white;
+  background-color: rgba(255, 255, 255, 0.9);
   padding: 5px;
   border-radius: 15px;
 }
-
 
 .grelha-estatisticas {
   display: grid;
@@ -66,32 +84,38 @@ img {
 .cartao-estatistica {
   padding: 1.5rem;
   background: rgba(30, 41, 59, 0.7);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: background 0.15s;
+}
+
+.cartao-estatistica:hover {
+  background: rgba(30, 41, 59, 0.9);
 }
 
 .numero-estatistica {
   margin: 0;
   font-size: 2.5rem;
-  color: #75ea66;
+  font-weight: 700;
+  color: #4be464;
 }
 
 .rotulo-estatistica {
   margin: 0.5rem 0 0 0;
   color: #94a3b8;
+  font-size: 0.98em;
 }
-
 
 .contentor-tabela {
   margin: 1rem 0;
   overflow-x: auto;
+  border-radius: 12px;
 }
-
 
 .tabela-estatisticas {
   width: 100%;
   border-collapse: collapse;
-  background: rgba(30, 41, 59, 0.5);
+  background: rgba(20, 31, 52, 0.6);
 }
 
 .tabela-estatisticas thead tr {
@@ -99,10 +123,13 @@ img {
 }
 
 .tabela-estatisticas th {
-  padding: 0.75rem;
-  border-bottom: 2px solid #4ba259;
-  color: #75ea66;
-  font-weight: 600;
+  padding: 12px 14px;
+  border-bottom: 2px solid rgba(75, 228, 100, 0.25);
+  color: #4be464;
+  font-weight: 700;
+  font-size: 0.92em;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 
 .tabela-estatisticas th.alinhar-direita {
@@ -110,23 +137,23 @@ img {
 }
 
 .tabela-estatisticas tbody tr {
-  transition: background 0.2s;
+  transition: background 0.15s;
 }
 
 .tabela-estatisticas tbody tr:hover {
-  background: rgba(75, 162, 89, 0.1);
+  background: rgba(75, 162, 89, 0.07);
 }
 
 .tabela-estatisticas td {
-  padding: 0.75rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
   color: #cbd5e1;
+  font-size: 1em;
 }
 
 .tabela-estatisticas td.alinhar-direita {
   text-align: right;
 }
-
 
 .tags-palavras {
   display: flex;
@@ -136,29 +163,31 @@ img {
 }
 
 .tag-palavra {
-  padding: 0.5rem 1rem;
-  background: rgba(75, 234, 102, 0.15);
-  border: 1px solid #75ea66;
+  padding: 0.4rem 1rem;
+  background: rgba(75, 228, 100, 0.08);
+  border: 1px solid rgba(75, 228, 100, 0.3);
   border-radius: 20px;
-  font-size: 0.9rem;
-  color: #cbd5e1;
+  font-size: 0.98rem;
+  color: #a3e6b0;
+  transition: background 0.15s;
 }
 
+.tag-palavra:hover {
+  background: rgba(75, 228, 100, 0.14);
+}
 
 .nota-estatisticas {
   margin-top: 2rem;
   font-style: italic;
-  color: #94a3b8;
-  font-size: 0.9rem;
+  color: #64748b;
+  font-size: 0.98rem;
 }
-
 
 .links-sociais {
   display: flex;
   align-items: center;
   gap: 2rem;
 }
-
 
 .grelha-funcionalidades {
   display: flex;

@@ -65,32 +65,34 @@ def get_tabela():
         data = request.get_json()
         if not data:
             return jsonify({'error': 'JSON inválido'}), 400
-        
-        nome = data.get('nome')
+
+        deputado_id = data.get('id')
         offset = data.get('offset', 0)
         texto = data.get('texto')
         data_inicio = data.get('data_inicio')
         data_fim = data.get('data_fim')
-        
-        # Validação do nome
-        if not nome or not isinstance(nome, str) or len(nome) > 200:
-            return jsonify({'error': 'Nome inválido'}), 400
-        
+
+        # Validação do id
+        if deputado_id is None or not isinstance(deputado_id, int) or deputado_id <= 0:
+            return jsonify({'error': 'ID de deputado inválido'}), 400
+
         # Validação do offset
         if not isinstance(offset, int) or offset < 0:
             offset = 0
-        
-        # Chamar o método com os parâmetros
-        resultado = pesquisa_core.get_deputado(
-            nome=nome, 
-            offset=offset, 
+
+        resultado = pesquisa_core.get_deputado_by_id(
+            deputado_id=deputado_id,
+            offset=offset,
             texto=texto,
             data_inicio=data_inicio,
             data_fim=data_fim
         )
-        
+
+        if resultado is None:
+            return jsonify({'error': 'Deputado não encontrado'}), 404
+
         return jsonify(resultado), 200
-        
+
     except Exception as e:
         print(f"Erro: {e}")
         return jsonify({'error': 'Erro interno'}), 500
