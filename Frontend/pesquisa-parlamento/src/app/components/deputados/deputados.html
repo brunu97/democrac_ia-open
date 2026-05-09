@@ -21,10 +21,13 @@
         <mat-autocomplete
           autoActiveFirstOption
           #auto="matAutocomplete"
+          [displayWith]="formatarDeputado"
           (optionSelected)="onDeputadoSelecionado($event)"
         >
-          @for (deputado of deputadosFiltrados; track deputado) {
-            <mat-option [value]="deputado.nome">{{ deputado.nome }}</mat-option>
+          @for (deputado of deputadosFiltrados; track deputado.id) {
+            <mat-option [value]="deputado">
+              {{ deputado.nome }} <span class="opt-partido">({{ deputado.partido }})</span>
+            </mat-option>
           }
         </mat-autocomplete>
       </mat-form-field>
@@ -77,7 +80,7 @@
     <!-- Tabela dos deputados -->
     @if (estado.tabela && !estado.loading) {
       <div class="area-tabela">
-        <h1>Intervenções de {{ deputadoSelecionado }}</h1>
+        <h1>Intervenções de {{ deputadoSelecionado }} <span class="header-partido">({{ partidoSelecionado }})</span></h1>
         <p>Total: {{ estado.tabela.total }} intervenções</p>
 
         <!-- Filtros -->
@@ -132,7 +135,34 @@
             <mat-icon>clear</mat-icon>
             Limpar
           </button>
+
+          <button
+            mat-stroked-button
+            [matMenuTriggerFor]="menuExportar"
+            [disabled]="estado.loading || exportando || !estado.tabela?.total"
+            style="height: 56px"
+            matTooltip="Exportar todas as intervenções com os filtros atuais"
+          >
+            <mat-icon>{{ exportando ? 'hourglass_top' : 'download' }}</mat-icon>
+            {{ exportando ? 'A exportar...' : 'Exportar' }}
+          </button>
+          <mat-menu #menuExportar="matMenu">
+            <button mat-menu-item (click)="exportar('csv')">
+              <mat-icon>table_view</mat-icon>
+              <span>CSV (Excel / Sheets)</span>
+            </button>
+            <button mat-menu-item (click)="exportar('pdf')">
+              <mat-icon>picture_as_pdf</mat-icon>
+              <span>PDF</span>
+            </button>
+          </mat-menu>
         </div>
+
+        @if (erroExportacao) {
+          <div class="erro-box" style="margin: 8px 0">
+            <p>⚠️ {{ erroExportacao }}</p>
+          </div>
+        }
 
         <div class="tabela-container">
           <table class="tabela-deputado">

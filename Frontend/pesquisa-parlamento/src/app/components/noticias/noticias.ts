@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnDestroy, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { SharedImports } from '../../shared/imports';
 import { PesquisaService } from '../../services/pesquisa-service';
@@ -29,7 +30,7 @@ interface Estado {
   templateUrl: './noticias.html',
   styleUrl: './noticias.css',
 })
-export class Noticias implements OnInit {
+export class Noticias implements OnInit, OnDestroy {
   estado$ = new BehaviorSubject<Estado>({
     loading: true,
     noticias: [],
@@ -43,6 +44,7 @@ export class Noticias implements OnInit {
     private sanitizer: DomSanitizer,
     private meta: Meta,
     private title: Title,
+    private destroyRef: DestroyRef,
   ) {
     this.title.setTitle('Notícias de Política Portuguesa com IA | Democrac_IA');
     this.meta.updateTag({
@@ -68,7 +70,9 @@ export class Noticias implements OnInit {
 
   carregarNoticias() {
     this.atualizarEstado({ loading: true, erro: null });
-    this.pesquisaService.get_noticias().subscribe({
+    this.pesquisaService.get_noticias()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
       next: (res: any) => {
         const resumoHtml = this.sanitizer.bypassSecurityTrustHtml(
           marked.parse(res.resumo || '') as string
@@ -99,5 +103,9 @@ export class Noticias implements OnInit {
       hour: '2-digit',
       minute: '2-digit',
     });
+  }
+
+  ngOnDestroy() {
+    this.estado$.complete();
   }
 }

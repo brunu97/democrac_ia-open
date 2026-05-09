@@ -4,7 +4,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 VECTOR_PATH = os.path.join(BASE_DIR, "base_dados")
 
-GROQ_KEY = "GROQ_KEY"
+GROQ_KEY = "CHAVE_GROQ"
 
 EMBED_MODEL = "BAAI/bge-m3"
 MODEL_SIMPLES = "llama-3.1-8b-instant"

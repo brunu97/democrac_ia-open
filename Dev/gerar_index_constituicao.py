@@ -1,9 +1,3 @@
-"""
-Indexação FAISS - Constituição da República Portuguesa
-1 chunk = 1 artigo completo (nunca partido)
-FP16 com ROCm/CUDA
-"""
-
 import faiss
 import sqlite3
 import numpy as np

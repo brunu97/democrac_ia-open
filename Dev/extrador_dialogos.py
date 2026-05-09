@@ -90,9 +90,17 @@ if __name__ == "__main__":
         pagina INTEGER,
         data DATE
     )""")
+    # Cada deputado é identificado pelo par (nome, partido) — pessoas diferentes
+    # podem partilhar o mesmo nome, mas não nome+partido.
     conn.execute("""CREATE TABLE deputados (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nome TEXT UNIQUE NOT NULL
+        nome TEXT NOT NULL,
+        partido TEXT NOT NULL,
+        total INTEGER NOT NULL,
+        tamanho_medio INTEGER NOT NULL,
+        primeira DATE,
+        ultima DATE,
+        UNIQUE(nome, partido)
     )""")
     conn.commit()
 
@@ -109,12 +117,38 @@ if __name__ == "__main__":
                     resultados)
                 conn.commit()
 
-    print("A popular tabela de deputados...")
+    print("A criar índice em intervencoes(nome, partido)...")
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_interv_nome_partido ON intervencoes(nome, partido)")
+    conn.commit()
+
+    print("A popular tabela de deputados (com filtro anti-ruído OCR)...")
+    # Mantém apenas pares com >= 5 intervenções E >= 5% do total daquele nome.
+    # Pares abaixo deste limiar são quase sempre erros de OCR no campo partido.
     conn.execute("""
-        INSERT INTO deputados (nome)
-        SELECT DISTINCT nome FROM intervencoes
-        WHERE nome IS NOT NULL
-        ORDER BY nome
+        INSERT INTO deputados (nome, partido, total, tamanho_medio, primeira, ultima)
+        SELECT par.nome, par.partido, par.n,
+               CAST(par.tam_medio AS INTEGER),
+               par.primeira, par.ultima
+        FROM (
+            SELECT nome, partido,
+                   COUNT(*) AS n,
+                   AVG(LENGTH(texto)) AS tam_medio,
+                   MIN(data) AS primeira,
+                   MAX(data) AS ultima
+            FROM intervencoes
+            WHERE nome IS NOT NULL AND partido IS NOT NULL AND partido != ''
+            GROUP BY nome, partido
+        ) par
+        JOIN (
+            SELECT nome, SUM(n) AS total_nome FROM (
+                SELECT nome, partido, COUNT(*) AS n
+                FROM intervencoes
+                WHERE nome IS NOT NULL AND partido IS NOT NULL AND partido != ''
+                GROUP BY nome, partido
+            ) GROUP BY nome
+        ) tot ON tot.nome = par.nome
+        WHERE par.n >= 5 AND par.n >= tot.total_nome * 0.05
+        ORDER BY par.nome COLLATE NOCASE, par.partido
     """)
     conn.commit()
 

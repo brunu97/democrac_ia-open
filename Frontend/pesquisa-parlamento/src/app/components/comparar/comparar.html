@@ -1,0 +1,195 @@
+<div class="base">
+  <div class="header">
+    <h1>Comparar Deputados</h1>
+    <p class="subtitle">Compara lado a lado dois deputados do parlamento</p>
+  </div>
+
+  @if (estado$ | async; as estado) {
+    @if (estado.loadingLista) {
+      <div class="loading-box">
+        <div class="spinner"></div>
+        <p>A carregar...</p>
+      </div>
+    } @else {
+      <div class="seletores">
+        <mat-form-field appearance="outline" class="seletor">
+          <mat-label>Deputado A</mat-label>
+          <input
+            matInput
+            type="text"
+            placeholder="Nome ou partido..."
+            [(ngModel)]="selecao1"
+            [matAutocomplete]="auto1"
+            (input)="filtrar(1, $event)"
+          />
+          <mat-autocomplete
+            autoActiveFirstOption
+            #auto1="matAutocomplete"
+            [displayWith]="formatarDeputado"
+          >
+            @for (d of filtrados1; track d.id) {
+              <mat-option [value]="d">
+                {{ d.nome }} <span class="opt-partido">({{ d.partido }})</span>
+              </mat-option>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <button
+          mat-icon-button
+          class="trocar-btn"
+          (click)="trocar()"
+          [disabled]="!podeComparar()"
+          aria-label="Trocar"
+        >
+          <mat-icon>swap_horiz</mat-icon>
+        </button>
+
+        <mat-form-field appearance="outline" class="seletor">
+          <mat-label>Deputado B</mat-label>
+          <input
+            matInput
+            type="text"
+            placeholder="Nome ou partido..."
+            [(ngModel)]="selecao2"
+            [matAutocomplete]="auto2"
+            (input)="filtrar(2, $event)"
+          />
+          <mat-autocomplete
+            autoActiveFirstOption
+            #auto2="matAutocomplete"
+            [displayWith]="formatarDeputado"
+          >
+            @for (d of filtrados2; track d.id) {
+              <mat-option [value]="d">
+                {{ d.nome }} <span class="opt-partido">({{ d.partido }})</span>
+              </mat-option>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
+
+      <div class="acao">
+        <button
+          mat-flat-button
+          color="primary"
+          (click)="comparar()"
+          [disabled]="!podeComparar() || estado.loadingComparar"
+        >
+          @if (estado.loadingComparar) { A comparar... } @else { Comparar }
+        </button>
+      </div>
+
+      @if (estado.erro) {
+        <div class="erro-box">{{ estado.erro }}</div>
+      }
+
+      @if (estado.resultado; as r) {
+        <div class="comparacao">
+          <div class="cards">
+            <div class="card cabec">
+              <h2>{{ r.deputado_1.nome }}</h2>
+              <span class="partido">{{ r.deputado_1.partido }}</span>
+            </div>
+            <div class="vs">VS</div>
+            <div class="card cabec">
+              <h2>{{ r.deputado_2.nome }}</h2>
+              <span class="partido">{{ r.deputado_2.partido }}</span>
+            </div>
+          </div>
+
+          <div class="metricas">
+            <div class="linha-metrica">
+              <div class="valor" [class.melhor]="vencedor(r.deputado_1, r.deputado_2, 'total') === 1">
+                {{ r.deputado_1.total | number:'1.0-0' }}
+              </div>
+              <div class="rotulo">Total de intervenções</div>
+              <div class="valor" [class.melhor]="vencedor(r.deputado_1, r.deputado_2, 'total') === 2">
+                {{ r.deputado_2.total | number:'1.0-0' }}
+              </div>
+            </div>
+
+            <div class="linha-metrica">
+              <div class="valor" [class.melhor]="vencedor(r.deputado_1, r.deputado_2, 'tamanho_medio') === 1">
+                {{ r.deputado_1.tamanho_medio }}
+              </div>
+              <div class="rotulo">Tamanho médio (carateres)</div>
+              <div class="valor" [class.melhor]="vencedor(r.deputado_1, r.deputado_2, 'tamanho_medio') === 2">
+                {{ r.deputado_2.tamanho_medio }}
+              </div>
+            </div>
+
+            <div class="linha-metrica">
+              <div class="valor">{{ anosAtividade(r.deputado_1) }}</div>
+              <div class="rotulo">Anos no parlamento</div>
+              <div class="valor">{{ anosAtividade(r.deputado_2) }}</div>
+            </div>
+
+            <div class="linha-metrica">
+              <div class="valor pequeno">{{ formatarData(r.deputado_1.primeira) }}</div>
+              <div class="rotulo">Primeira intervenção</div>
+              <div class="valor pequeno">{{ formatarData(r.deputado_2.primeira) }}</div>
+            </div>
+
+            <div class="linha-metrica">
+              <div class="valor pequeno">{{ formatarData(r.deputado_1.ultima) }}</div>
+              <div class="rotulo">Última intervenção</div>
+              <div class="valor pequeno">{{ formatarData(r.deputado_2.ultima) }}</div>
+            </div>
+          </div>
+
+          <h3 class="seccao-titulo">Intervenções por ano</h3>
+          <div class="grafico-comum">
+            @for (ano of anosUniao(r.deputado_1, r.deputado_2); track ano) {
+              <div class="linha-ano">
+                <div class="lado esq">
+                  <div
+                    class="barra a"
+                    [style.width.%]="(contarAno(r.deputado_1, ano) / maxAnoComum(r.deputado_1, r.deputado_2)) * 100"
+                    [title]="ano + ': ' + contarAno(r.deputado_1, ano)"
+                  ></div>
+                  <span class="valor-ano">{{ contarAno(r.deputado_1, ano) || '' }}</span>
+                </div>
+                <div class="ano-rotulo">{{ ano }}</div>
+                <div class="lado dir">
+                  <span class="valor-ano">{{ contarAno(r.deputado_2, ano) || '' }}</span>
+                  <div
+                    class="barra b"
+                    [style.width.%]="(contarAno(r.deputado_2, ano) / maxAnoComum(r.deputado_1, r.deputado_2)) * 100"
+                    [title]="ano + ': ' + contarAno(r.deputado_2, ano)"
+                  ></div>
+                </div>
+              </div>
+            }
+          </div>
+
+          <h3 class="seccao-titulo">Intervenção mais recente</h3>
+          <div class="cards recentes">
+            <div class="card recente">
+              @if (r.deputado_1.recente; as rec) {
+                <p class="texto-rec">{{ rec.texto }}</p>
+                <div class="rec-info">
+                  <a class="fonte-link" [href]="gerarLink(rec.ficheiro, rec.pagina)" target="_blank" rel="noopener">🔗 Fonte</a>
+                  <span class="fonte-sep">·</span>{{ formatarData(rec.data) }}
+                </div>
+              } @else {
+                <p class="vazio">Sem dados.</p>
+              }
+            </div>
+            <div class="card recente">
+              @if (r.deputado_2.recente; as rec) {
+                <p class="texto-rec">{{ rec.texto }}</p>
+                <div class="rec-info">
+                  <a class="fonte-link" [href]="gerarLink(rec.ficheiro, rec.pagina)" target="_blank" rel="noopener">🔗 Fonte</a>
+                  <span class="fonte-sep">·</span>{{ formatarData(rec.data) }}
+                </div>
+              } @else {
+                <p class="vazio">Sem dados.</p>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    }
+  }
+</div>

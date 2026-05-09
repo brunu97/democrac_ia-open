@@ -155,14 +155,14 @@ img {
   text-align: right;
 }
 
-.tags-palavras {
+.etiquetas-palavras {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
   margin: 1rem 0;
 }
 
-.tag-palavra {
+.etiqueta-palavra {
   padding: 0.4rem 1rem;
   background: rgba(75, 228, 100, 0.08);
   border: 1px solid rgba(75, 228, 100, 0.3);
@@ -172,7 +172,7 @@ img {
   transition: background 0.15s;
 }
 
-.tag-palavra:hover {
+.etiqueta-palavra:hover {
   background: rgba(75, 228, 100, 0.14);
 }
 

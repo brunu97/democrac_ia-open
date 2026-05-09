@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnDestroy } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { SharedImports } from '../../shared/imports';
 import {
@@ -30,7 +31,7 @@ interface Estado {
   templateUrl: './pesquisa.html',
   styleUrl: './pesquisa.css',
 })
-export class Pesquisa {
+export class Pesquisa implements OnDestroy {
   estado$ = new BehaviorSubject<Estado>({
     loading: false,
     resposta: null,
@@ -58,6 +59,7 @@ export class Pesquisa {
     private pesquisaService: PesquisaService,
     private meta: Meta,
     private title: Title,
+    private destroyRef: DestroyRef,
   ) {
     this.title.setTitle('Democrac_IA - Pesquisa Debates da Assembleia da República com IA');
     this.meta.updateTag({
@@ -107,7 +109,9 @@ export class Pesquisa {
       anos: this.anosSelecionados,
     };
 
-    this.pesquisaService.procurar(pesquisa).subscribe({
+    this.pesquisaService.procurar(pesquisa)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
       next: (res: PesquisaResultado) => {
         res.pergunta = this.pergunta;
         res.modo = modo;
@@ -151,5 +155,9 @@ export class Pesquisa {
     return this.anosSelecionados.length === 0 || this.anos.length === this.anosSelecionados.length
       ? 'Todos os anos'
       : 'Selecionados: ' + this.anosSelecionados.length;
+  }
+
+  ngOnDestroy() {
+    this.estado$.complete();
   }
 }

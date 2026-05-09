@@ -2,7 +2,7 @@
 
 ## Queres mesmo saber o que realmente se passa aqui?
 
-Primeiro de tudo, tudo isto é **código aberto**! O backend e o frontend, vai aqui, podes fazer o que quiseres, podes copiar, expandir, tanto faz: [GitHub](https://github.com/brunu97/democrac_ia-open)
+Primeiro de tudo, tudo isto é **código aberto**! O backend e o frontend, vai aqui, podes fazer o que quiseres, podes copiar, expandir, tanto faz: [<u>GitHub</u>](https://github.com/brunu97/democrac_ia-open)
 
 O código não está perfeito, e certamente há pontos onde é possível melhorar, se tens alguma sugestão, envia [para aqui](https://docs.google.com/forms/d/e/1FAIpQLSfp3p-MzKBBUkeyG_b_Tv3Smr9bKByWhuheWD1OqDjfU-39Pw/viewform?usp=header)
 
@@ -10,7 +10,7 @@ Primeiro vamos à maneira como o site funciona e de seguida à forma como os dad
 
 A Pesquisa no site de forma resumida num diagrama funciona assim, é essencialmente um [RAG](https://en.wikipedia.org/wiki/Retrieval-augmented_generation) (Retrieval-Augmented Generation)
 
-![Diagrama de como funciona o Democrac_IA](./diagrama.png)
+![Diagrama de como funciona o Democrac_IA](diagrama.png)
 
 Toda a backend é feita em **Python** usando **Flask**, Python é ideal para tudo o que é IA e ML, há excelentes módulos para se usar.
 
@@ -20,7 +20,7 @@ Depois de transformar os textos em vetores, estes beep boops podem ir para o FAI
 
 ---
 
-### O FAISS
+### **O FAISS**
 
 **Facebook AI Similarity Search** ou simplesmente **FAISS** é uma biblioteca de pesquisa vetorial desenvolvida pela Meta pela equipa do Facebook IA (daí o nome). É usada para encontrar os vetores mais semelhantes a um vetor de consulta em uma grande base de dados vetoriais.
 
@@ -34,7 +34,7 @@ Todos os textos estão guardados numa base de dados em **SQLite**, textos estes 
 
 ---
 
-### A Magia acontece - LLM com RAG
+### **A Magia acontece - LLM com RAG**
 
 Depois de se encontrar toda a informação relevante, todos os dados incluindo um conjunto de instruções destinadas ao system prompt da LLM são enviados para esta fase do processo.
 
@@ -54,9 +54,9 @@ Todo o frontend é feito em **Angular**, não haveria nada de mal em utilizar o 
 
 ---
 
-### A Extração de dados
+### **A Extração de dados**
 
-![Diagrama de extração de dados](./diagrama2.png)
+![Diagrama de extração de dados](diagrama2.png)
 
 Talvez a parte mais difícil seja a extração dos PDFs dos debates do Parlamento. Inicialmente, a ideia ia bem para além de só dos debates, mas como todo o conteúdo que o site tem, desde 1821 (aproveito já para agradecer o trabalho incrível que o pessoal do parlamento fez a transcrever tudo isto e ter tudo digitalizado), dificuldades técnicas surgiram rapidamente. Não só a resolução de vários ficheiros não é a ideal para um computador ler, como o esforço do hardware para processar isto seria enorme, então decidi focar só nos debates a partir de 2006.
 
@@ -69,6 +69,26 @@ A Indexação do pdf da Constituição já foi feito de forma diferente e mais c
 A estrutura de cada PDF é semelhante ao longo dos anos dos documentos, no entanto há algumas alterações, como por exemplo a lista de presença existe nos mais antigos mas não nos novos, mas a variação entre PDFs não é suficiente para causar ruídos significativos na pesquisa.
 
 Tudo é armazenado na base de dados e indexado no FAISS.
+
+---
+
+### **A Identificação dos Deputados**
+
+Depois de extrair as intervenções todas dos PDFs, é preciso saber **quem é quem**. Originalmente assumi que cada nome correspondia a uma pessoa, mas... rapidamente vi que isso estava errado! Há deputados diferentes com o mesmo nome.
+
+Por isso, cada deputado é identificado pelo par **(nome, partido)**. Não existem dois deputados reais com o mesmo nome **e** o mesmo partido.
+
+Mas há um problema chato: **erros de OCR**. Os PDFs nem sempre são lidos perfeitamente, e às vezes o nome do partido vem mal. Por exemplo, "PCP" pode aparecer como "PC" ou "PCD" em algumas linhas, e isso ia criar deputados fantasma 👻. Para limpar isto, só conto um par (nome, partido) como deputado real se tiver pelo menos **5 intervenções** **E** representar pelo menos **5%** do total das intervenções daquele nome. Tudo abaixo disso é descartado como ruído.
+
+A tabela de deputados é construída no fim da extração, já com o total, primeira e última intervenção, tamanho médio, etc., todos precomputados, assim o site não tem de fazer estas contas em runtime, é só ler.
+
+---
+
+### **Comparar Deputados**
+
+Esta página permite comparar dois deputados lado a lado: total de intervenções, tamanho médio, anos no parlamento, distribuição por ano e a intervenção mais recente de cada um. Como tudo já está precomputado na tabela dos deputados, a comparação é praticamente instantânea independentemente de quem escolheres.
+
+A página dos Deputados também usa o mesmo critério de **(nome, partido)**, por isso quando há homónimos eles aparecem como entradas separadas no autocomplete, com o partido de cada um, para os distinguir.
 
 ---
 

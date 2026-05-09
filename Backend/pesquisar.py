@@ -44,59 +44,88 @@ class Pesquisar:
             print(f"Erro ao carregar dados: {e}")
             return False
 
+    def _get_deputado(self, deputado_id):
+        cursor = self._get_conn().cursor()
+        cursor.execute(
+            'SELECT id, nome, partido, total, tamanho_medio, primeira, ultima FROM deputados WHERE id = ?',
+            (deputado_id,),
+        )
+        row = cursor.fetchone()
+        return dict(row) if row else None
+
     def get_oradores_lista(self):
         cursor = self._get_conn().cursor()
-        cursor.execute('''SELECT id, nome FROM deputados ORDER BY nome''')
+        cursor.execute('SELECT id, nome, partido FROM deputados ORDER BY nome COLLATE NOCASE, partido')
         return [dict(row) for row in cursor.fetchall()]
 
     def get_deputado_by_id(self, deputado_id, offset=0, texto=None, data_inicio=None, data_fim=None):
-        cursor = self._get_conn().cursor()
-        cursor.execute('SELECT nome FROM deputados WHERE id = ?', (deputado_id,))
-        row = cursor.fetchone()
-        if not row:
+        d = self._get_deputado(deputado_id)
+        if not d:
             return None
-        nome = row['nome']
-        resultado = self.get_deputado(nome, offset, texto, data_inicio, data_fim)
-        resultado['nome_deputado'] = nome
+        resultado = self.get_deputado(d['nome'], d['partido'], offset, texto, data_inicio, data_fim)
+        resultado['nome_deputado'] = d['nome']
+        resultado['partido_deputado'] = d['partido']
         return resultado
 
-    def get_deputado(self, nome, offset=0, texto=None, data_inicio=None, data_fim=None):
+    def exportar_deputado_by_id(self, deputado_id, texto=None, data_inicio=None, data_fim=None, max_linhas=10000):
+        d = self._get_deputado(deputado_id)
+        if not d:
+            return None
+        nome, partido = d['nome'], d['partido']
+
+        base_query = 'SELECT nome, partido, texto, ficheiro, pagina, data FROM intervencoes WHERE nome = ? AND partido = ?'
+        params = [nome, partido]
+
+        if texto:
+            base_query += ' AND texto LIKE ?'
+            params.append(f'%{texto}%')
+        if data_inicio:
+            base_query += ' AND data >= ?'
+            params.append(data_inicio)
+        if data_fim:
+            base_query += ' AND data <= ?'
+            params.append(data_fim)
+
+        base_query += ' ORDER BY data DESC LIMIT ?'
         cursor = self._get_conn().cursor()
-        
-        base_query = '''SELECT nome, partido, texto, ficheiro, pagina, data FROM intervencoes  WHERE nome = ?'''
-        count_query = '''SELECT COUNT(*) as total FROM intervencoes WHERE nome = ?'''
-        
-        params = [nome]
-        
+        cursor.execute(base_query, params + [max_linhas])
+        return {
+            'nome_deputado': nome,
+            'partido_deputado': partido,
+            'dados': [dict(row) for row in cursor.fetchall()],
+        }
+
+    def get_deputado(self, nome, partido, offset=0, texto=None, data_inicio=None, data_fim=None):
+        cursor = self._get_conn().cursor()
+
+        base_query = 'SELECT nome, partido, texto, ficheiro, pagina, data FROM intervencoes WHERE nome = ? AND partido = ?'
+        count_query = 'SELECT COUNT(*) as total FROM intervencoes WHERE nome = ? AND partido = ?'
+
+        params = [nome, partido]
         # Adicionar filtro de texto
         if texto:
             base_query += ' AND texto LIKE ?'
             count_query += ' AND texto LIKE ?'
             params.append(f'%{texto}%')
-        
-        # Adicionar filtro de data início
+        # Adicionar filtro de data início   
         if data_inicio:
             base_query += ' AND data >= ?'
             count_query += ' AND data >= ?'
             params.append(data_inicio)
-        
         # Adicionar filtro de data fim
         if data_fim:
             base_query += ' AND data <= ?'
             count_query += ' AND data <= ?'
             params.append(data_fim)
-        
         # Adicionar ordenação e paginação à query principal
         base_query += ' ORDER BY data DESC LIMIT ? OFFSET ?'
-        
-        # Executar query principal
+         # Executar query principal
         cursor.execute(base_query, params + [15, offset])
         resultados = [dict(row) for row in cursor.fetchall()]
-        
         # Executar query da contagem
         cursor.execute(count_query, params)
         total = cursor.fetchone()['total']
-        
+
         return {
             'dados': resultados,
             'total': total,
@@ -105,28 +134,74 @@ class Pesquisar:
             'tem_mais_paginas': (offset + 15) < total
         }
 
+    def _stats_deputado(self, deputado_id):
+        d = self._get_deputado(deputado_id)
+        if not d:
+            return None
+
+        cursor = self._get_conn().cursor()
+        cursor.execute('''
+            SELECT strftime('%Y', data) AS ano, COUNT(*) AS n
+            FROM intervencoes WHERE nome = ? AND partido = ?
+            GROUP BY ano ORDER BY ano
+        ''', (d['nome'], d['partido']))
+        por_ano = [dict(r) for r in cursor.fetchall()]
+
+        cursor.execute('''
+            SELECT texto, data, ficheiro, pagina FROM intervencoes
+            WHERE nome = ? AND partido = ? ORDER BY data DESC LIMIT 1
+        ''', (d['nome'], d['partido']))
+        recente_row = cursor.fetchone()
+
+        return {
+            'id': d['id'],
+            'nome': d['nome'],
+            'partido': d['partido'],
+            'total': d['total'],
+            'tamanho_medio': d['tamanho_medio'],
+            'primeira': d['primeira'],
+            'ultima': d['ultima'],
+            'por_ano': por_ano,
+            'recente': dict(recente_row) if recente_row else None,
+        }
+
+    def comparar_deputados(self, id1, id2):
+        d1 = self._stats_deputado(id1)
+        d2 = self._stats_deputado(id2)
+        if not d1 or not d2:
+            return None
+        return {'deputado_1': d1, 'deputado_2': d2}
+
     def obtem_quiz(self):
         cursor = self._get_conn().cursor()
 
-        # Escolhe deputado qualquer que esteja no top das intervenções
-        cursor.execute('''SELECT nome FROM intervencoes WHERE LENGTH(texto) > 10 AND LENGTH(texto) <= 700 GROUP BY nome ORDER BY COUNT(*) DESC LIMIT 30''')
-        deputados = [row['nome'] for row in cursor.fetchall()]
+        # Top deputados por nº de intervenções
+        cursor.execute('SELECT nome, partido FROM deputados ORDER BY total DESC LIMIT 30')
+        top = [(r['nome'], r['partido']) for r in cursor.fetchall()]
 
-        correto = random.choice(deputados)
+        correto_nome, correto_partido = random.choice(top)
 
-        cursor.execute('''SELECT texto, data, ficheiro, pagina FROM intervencoes WHERE nome = ? AND LENGTH(texto) > 10 AND LENGTH(texto) <= 700 ORDER BY RANDOM() LIMIT 1''', (correto,))
+        cursor.execute('''
+            SELECT texto, data, ficheiro, pagina FROM intervencoes
+            WHERE nome = ? AND partido = ? AND LENGTH(texto) > 10 AND LENGTH(texto) <= 700
+            ORDER BY RANDOM() LIMIT 1
+        ''', (correto_nome, correto_partido))
         row = cursor.fetchone()
 
-        fonte = row['ficheiro']
-        data = row['data']
-        texto = row['texto']
-        pagina = row['pagina']
-
-        errados = random.sample([d for d in deputados if d != correto], 2) # Obtem 2 outros quaisqueres que estão errados para as opções
-        opcoes = [correto] + errados
+        # 2 outros nomes distintos para as opções erradas
+        nomes_distintos = list({n for (n, _) in top if n != correto_nome})
+        errados = random.sample(nomes_distintos, 2)
+        opcoes = [correto_nome] + errados
         random.shuffle(opcoes)
 
-        return { 'citacao': texto, 'opcoes': opcoes, 'correto': correto, 'data': data, 'fonte': fonte, 'pagina': pagina }
+        return {
+            'citacao': row['texto'],
+            'opcoes': opcoes,
+            'correto': correto_nome,
+            'data': row['data'],
+            'fonte': row['ficheiro'],
+            'pagina': row['pagina'],
+        }
 
     def pesquisa(self, query, modo="pesquisa", anos=None, incluir_contexto_adjacente=True, top_n_com_contexto=3):
         config_prompt = prompt.get_prompt_config(modo)

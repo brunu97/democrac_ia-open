@@ -7,6 +7,7 @@ import { NaoEncontrado } from './components/nao-encontrado/nao-encontrado';
 import { Deputados } from './components/deputados/deputados';
 import { Noticias } from './components/noticias/noticias';
 import { Quiz } from './components/quiz/quiz';
+import { Comparar } from './components/comparar/comparar';
 
 
 export const routes: Routes = [
@@ -15,6 +16,7 @@ export const routes: Routes = [
     { path: 'deputados/:id', component: Deputados },
     { path: 'noticias', component: Noticias },
     { path: 'quiz', component: Quiz },
+    { path: 'comparar', component: Comparar },
     { path: 'info/como-usar', component: ComoUsar },
     { path: 'info/como-funciona', component: ComoFunciona },
     { path: 'info/sobre', component: Sobre },

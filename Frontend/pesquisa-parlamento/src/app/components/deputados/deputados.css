@@ -24,6 +24,21 @@
   letter-spacing: 0.3px;
 }
 
+.opt-partido {
+  color: #4be464;
+  font-weight: 600;
+  margin-left: 4px;
+  font-size: 0.9em;
+}
+
+.header-partido {
+  color: #4be464;
+  font-size: 0.55em;
+  font-weight: 600;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
 /* ==================== PESQUISA ==================== */
 .pesquisa {
   margin: 0 auto;

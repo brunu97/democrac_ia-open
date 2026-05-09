@@ -7,7 +7,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatListModule } from '@angular/material/list';
-import { MatMenu } from '@angular/material/menu';
+import { MatMenu, MatMenuModule } from '@angular/material/menu';
 import { MatAccordion, MatExpansionModule, MatExpansionPanel } from '@angular/material/expansion';
 import { MatToolbar } from '@angular/material/toolbar';
 import { MatChip, MatChipListbox, MatChipOption, MatChipSet } from '@angular/material/chips';
@@ -27,6 +27,7 @@ export const SharedImports = [
   MatProgressSpinnerModule,
   MatListModule,
   MatMenu,
+  MatMenuModule,
   MatAccordion,
   MatExpansionPanel,
   MatToolbar,

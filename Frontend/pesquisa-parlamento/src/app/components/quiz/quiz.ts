@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnDestroy, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { SharedImports } from '../../shared/imports';
 import { PesquisaService } from '../../services/pesquisa-service';
@@ -21,7 +22,7 @@ interface Estado {
   templateUrl: './quiz.html',
   styleUrl: './quiz.css',
 })
-export class Quiz implements OnInit {
+export class Quiz implements OnInit, OnDestroy {
   estado$ = new BehaviorSubject<Estado>({
     loading: true,
     pergunta: null,
@@ -33,6 +34,7 @@ export class Quiz implements OnInit {
     private pesquisaService: PesquisaService,
     private meta: Meta,
     private title: Title,
+    private destroyRef: DestroyRef,
   ) {
     this.title.setTitle('Quiz Parlamentar - Conheces os Deputados Portugueses? | Democrac_IA');
     this.meta.updateTag({ name: 'description', content: 'Quiz interativo sobre política portuguesa: adivinha qual deputado disse esta frase no parlamento. Testa os teus conhecimentos sobre os deputados da Assembleia da República.' });
@@ -55,7 +57,9 @@ export class Quiz implements OnInit {
 
   carregarPergunta() {
     this.atualizarEstado({ loading: true, erro: null, selecionado: null, pergunta: null });
-    this.pesquisaService.get_quiz().subscribe({
+    this.pesquisaService.get_quiz()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
       next: (res: QuizPergunta) => {
         console.log(res)
         this.atualizarEstado({ loading: false, pergunta: res });
@@ -93,5 +97,9 @@ export class Quiz implements OnInit {
     if (this.estado$.value.selecionado) return;
     const correto = this.estado$.value.pergunta?.correto ?? '';
     this.atualizarEstado({ selecionado: 'desistiu' });
+  }
+
+  ngOnDestroy() {
+    this.estado$.complete();
   }
 }

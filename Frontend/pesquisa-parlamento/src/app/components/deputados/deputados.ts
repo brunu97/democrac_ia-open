@@ -1,9 +1,11 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, OnDestroy, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { SharedImports } from '../../shared/imports';
-import { TabelaRequest } from '../../models/models';
+import { ExportarRequest, TabelaRequest } from '../../models/models';
 import { PesquisaService } from '../../services/pesquisa-service';
+import { ExportarService } from '../../services/exportar-service';
 import { BehaviorSubject } from 'rxjs';
 import { Meta, Title } from '@angular/platform-browser';
 import { SelecionadoPipe } from '../../selecionado.pipe';
@@ -22,7 +24,7 @@ interface Estado {
   templateUrl: './deputados.html',
   styleUrl: './deputados.css',
 })
-export class Deputados implements OnInit {
+export class Deputados implements OnInit, OnDestroy {
   estado$ = new BehaviorSubject<Estado>({
     loading: false,
     tabela: null,
@@ -32,9 +34,10 @@ export class Deputados implements OnInit {
   deputadosLista: any[] = [];
   deputadosFiltrados: any[] = [];
   deputadoSelecionado: string = '';
+  partidoSelecionado: string = '';
   deputadoId: number | null = null;
   filtroTexto: string = '';
-  filtroNome: string = '';
+  filtroNome: any = '';
 
   dataInicio: Date | null = null;
   dataFim: Date | null = null;
@@ -45,12 +48,18 @@ export class Deputados implements OnInit {
 
   private pendingId: number | null = null;
 
+  exportando = false;
+  erroExportacao: string | null = null;
+
   constructor(
     private pesquisaService: PesquisaService,
+    private exportarService: ExportarService,
     private meta: Meta,
     private title: Title,
     private route: ActivatedRoute,
     private router: Router,
+    private cdr: ChangeDetectorRef,
+    private destroyRef: DestroyRef,
   ) {
     this.title.setTitle('Deputados da Assembleia da República - Intervenções Parlamentares | Democrac_IA');
     this.meta.updateTag({
@@ -62,24 +71,30 @@ export class Deputados implements OnInit {
     this.meta.updateTag({ property: 'og:url', content: 'https://www.democrac-ia.pt/deputados' });
     this.meta.updateTag({ name: 'twitter:card', content: 'summary_large_image' });
     this.meta.updateTag({ name: 'twitter:title', content: 'Deputados da Assembleia da República | Democrac_IA' });
-    this.meta.updateTag({ name: 'twitter:description', content: 'Consulta as intervenções de 1266 deputados da Assembleia da República desde 2006. Pesquisa o que cada deputado disse no parlamento.' });
+    this.meta.updateTag({ name: 'twitter:description', content: 'Consulta as intervenções dos deputados da Assembleia da República desde 2006. Pesquisa o que cada deputado disse no parlamento.' });
     this.meta.updateTag({ name: 'robots', content: 'index, follow' });
 
     this.carregarDeputados();
   }
 
   ngOnInit() {
-    this.route.paramMap.subscribe(params => {
-      const idParam = params.get('id');
-      if (idParam) {
-        const id = +idParam;
-        if (this.deputadosLista.length > 0) {
-          this.selecionarPorId(id);
-        } else {
-          this.pendingId = id;
+    this.route.paramMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(params => {
+        const idParam = params.get('id');
+        if (idParam) {
+          const id = +idParam;
+          if (this.deputadosLista.length > 0) {
+            this.selecionarPorId(id);
+          } else {
+            this.pendingId = id;
+          }
         }
-      }
-    });
+      });
+  }
+
+  ngOnDestroy() {
+    this.estado$.complete();
   }
 
   private selecionarPorId(id: number) {
@@ -88,7 +103,8 @@ export class Deputados implements OnInit {
 
     this.deputadoId = dep.id;
     this.deputadoSelecionado = dep.nome;
-    this.filtroNome = dep.nome;
+    this.partidoSelecionado = dep.partido || '';
+    this.filtroNome = dep;
 
     const qp = this.route.snapshot.queryParamMap;
     const offset = +(qp.get('offset') || '0');
@@ -106,7 +122,9 @@ export class Deputados implements OnInit {
   }
 
   private carregarDeputados() {
-    this.pesquisaService.get_oradores().subscribe({
+    this.pesquisaService.get_oradores()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
       next: (res: any) => {
         this.deputadosLista = res;
         this.deputadosFiltrados = res;
@@ -126,17 +144,24 @@ export class Deputados implements OnInit {
   filtrarDeputados(event: Event) {
     const valor = (event.target as HTMLInputElement).value.toLowerCase();
     this.deputadosFiltrados = this.deputadosLista.filter((d) =>
-      d.nome.toLowerCase().includes(valor),
+      d.nome.toLowerCase().includes(valor) ||
+      (d.partido && d.partido.toLowerCase().includes(valor)),
     );
   }
 
   onDeputadoSelecionado(event: any) {
-    const dep = this.deputadosLista.find(d => d.nome === event.option.value);
-    if (dep) {
+    const dep = event.option.value;
+    if (dep && dep.id) {
       this.limparFiltros();
       this.router.navigate(['/deputados', dep.id]);
     }
   }
+
+  formatarDeputado = (dep: any): string => {
+    if (!dep) return '';
+    if (typeof dep === 'string') return dep;
+    return dep.partido ? `${dep.nome} (${dep.partido})` : dep.nome;
+  };
 
   obtemTabela(id: number, offset: number) {
     this.atualizarEstado({ loading: true, tabela: null, erro: null });
@@ -149,7 +174,9 @@ export class Deputados implements OnInit {
       ...(this.dataFim ? { data_fim: this.formatarDataParaAPI(this.dataFim) } : {}),
     };
 
-    this.pesquisaService.get_tabela(pesquisa).subscribe({
+    this.pesquisaService.get_tabela(pesquisa)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
       next: (res: any) => {
         this.off_set_atual = offset;
         this.dadosTotais = res.total;
@@ -240,5 +267,50 @@ export class Deputados implements OnInit {
 
   get temProxima(): boolean {
     return this.off_set_atual + this.pagina_tamanho < this.dadosTotais;
+  }
+
+  exportar(formato: 'csv' | 'pdf') {
+    if (this.deputadoId === null || this.exportando) return;
+
+    this.exportando = true;
+    this.erroExportacao = null;
+
+    const pedido: ExportarRequest = {
+      id: this.deputadoId,
+      ...(this.filtroTexto ? { texto: this.filtroTexto } : {}),
+      ...(this.dataInicio ? { data_inicio: this.formatarDataParaAPI(this.dataInicio) } : {}),
+      ...(this.dataFim ? { data_fim: this.formatarDataParaAPI(this.dataFim) } : {}),
+    };
+
+    this.pesquisaService.exportar(pedido)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+      next: async (res) => {
+        try {
+          const meta = {
+            nome_deputado: res.nome_deputado,
+            partido_deputado: this.partidoSelecionado || undefined,
+            filtro_texto: this.filtroTexto || undefined,
+            data_inicio: this.dataInicio ? this.formatarDataParaAPI(this.dataInicio) : undefined,
+            data_fim: this.dataFim ? this.formatarDataParaAPI(this.dataFim) : undefined,
+          };
+          if (formato === 'csv') {
+            this.exportarService.exportarCSV(res.dados, meta);
+          } else {
+            await this.exportarService.exportarPDF(res.dados, meta);
+          }
+        } catch (e) {
+          this.erroExportacao = 'Erro ao gerar ficheiro.';
+        } finally {
+          this.exportando = false;
+          this.cdr.markForCheck();
+        }
+      },
+      error: () => {
+        this.exportando = false;
+        this.erroExportacao = 'Erro ao obter dados para exportação.';
+        this.cdr.markForCheck();
+      },
+    });
   }
 }

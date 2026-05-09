@@ -20,37 +20,41 @@ print("=== Carrega Dados ===")
 if not pesquisa_core.carrega_dados():
     print("Falha ao carregar dados!")
 
+
 @app.route('/api/pesquisa', methods=['POST'])
 def api_pesquisa():
     try:
         data = request.get_json()
         req_pesquisa = PesquisaRequest(data)
         is_valido, erro = req_pesquisa.validar()
-        
+
         if not is_valido:
             return jsonify({'error': erro}), 400
-        
+
         resposta = "Pesquisa realizada com sucesso."
-        
+
         if not req_pesquisa.modo == "constituicao":
             # Realizar pesquisa
-            resultados = pesquisa_core.pesquisa(req_pesquisa.query, req_pesquisa.modo, req_pesquisa.anos)
-            
+            resultados = pesquisa_core.pesquisa(
+                req_pesquisa.query, req_pesquisa.modo, req_pesquisa.anos)
+
             # Gerar resposta
             if not req_pesquisa.modo == 'simples':
-                resposta = pesquisa_core.gera_resposta(req_pesquisa.query, resultados, req_pesquisa.modo)
+                resposta = pesquisa_core.gera_resposta(
+                    req_pesquisa.query, resultados, req_pesquisa.modo)
         else:
             # Realizar pesquisa e resposta
-            resultados, resposta = pesquisa_core.pesquisa_constituicao(req_pesquisa.query)
+            resultados, resposta = pesquisa_core.pesquisa_constituicao(
+                req_pesquisa.query)
 
         return jsonify({
             'resposta': resposta,
             'fontes': resultados
         })
-        
-        
+
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
 
 @app.route('/api/lista-oradores', methods=['GET'])
 def api_oradores():
@@ -58,6 +62,7 @@ def api_oradores():
         return pesquisa_core.get_oradores_lista()
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
 
 @app.route('/api/tabela', methods=['POST'])
 def get_tabela():
@@ -98,6 +103,64 @@ def get_tabela():
         return jsonify({'error': 'Erro interno'}), 500
 
 
+@app.route('/api/exportar', methods=['POST'])
+def api_exportar():
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'JSON inválido'}), 400
+
+        deputado_id = data.get('id')
+        texto = data.get('texto')
+        data_inicio = data.get('data_inicio')
+        data_fim = data.get('data_fim')
+
+        if deputado_id is None or not isinstance(deputado_id, int) or deputado_id <= 0:
+            return jsonify({'error': 'ID de deputado inválido'}), 400
+
+        resultado = pesquisa_core.exportar_deputado_by_id(
+            deputado_id=deputado_id,
+            texto=texto,
+            data_inicio=data_inicio,
+            data_fim=data_fim,
+        )
+
+        if resultado is None:
+            return jsonify({'error': 'Deputado não encontrado'}), 404
+
+        return jsonify(resultado), 200
+
+    except Exception as e:
+        print(f"Erro: {e}")
+        return jsonify({'error': 'Erro interno'}), 500
+
+
+# ==================== COMPARAR ====================
+
+@app.route('/api/comparar', methods=['POST'])
+def api_comparar():
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'JSON inválido'}), 400
+
+        id1 = data.get('id1')
+        id2 = data.get('id2')
+
+        if not isinstance(id1, int) or not isinstance(id2, int) or id1 <= 0 or id2 <= 0:
+            return jsonify({'error': 'IDs inválidos'}), 400
+        if id1 == id2:
+            return jsonify({'error': 'Os deputados têm de ser diferentes'}), 400
+
+        resultado = pesquisa_core.comparar_deputados(id1, id2)
+        if resultado is None:
+            return jsonify({'error': 'Deputado não encontrado'}), 404
+        return jsonify(resultado), 200
+
+    except Exception as e:
+        print(f"Erro: {e}")
+        return jsonify({'error': 'Erro interno'}), 500
+
 
 # ==================== QUIZ ====================
 
@@ -130,6 +193,7 @@ def api_noticias():
         'resumo': dados.get('resumo', ''),
         'atualizado_em': dados.get('atualizado_em')
     })
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=False, use_reloader=False)
