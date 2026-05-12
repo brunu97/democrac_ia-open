@@ -10,7 +10,7 @@ O Democrac_IA permite pesquisar e analisar debates parlamentares portugueses usa
 ### Backend (Python + Flask)
 - **Embeddings**: [BGE-M3](https://huggingface.co/BAAI/bge-m3) via SentenceTransformer
 - **Vector Search**: FAISS (Meta AI)
-- **LLM**: LLaMA 3.1 8B via [groqCloud](https://groq.com/)
+- **LLM**: LLaMA 3.1 8B e 70B, Qwen 3 32B via [groqCloud](https://groq.com/)
 - **Database**: SQLite
 - **RAG Pipeline**: Retrieval-Augmented Generation
 
@@ -21,8 +21,8 @@ O Democrac_IA permite pesquisar e analisar debates parlamentares portugueses usa
 
 ### Dados
 - **Fonte**: [debates.parlamento.pt](https://debates.parlamento.pt/)
-- **Período**: Dezembro 2006 - Janeiro 2026
-- **Volume**: ~1900 PDFs processados
+- **Período**: Dezembro 2006 - Abril 2026
+- **Volume**: ~2000 PDFs processados
 - **Processamento via pytorch**: ROCm e CUDA
 
 
