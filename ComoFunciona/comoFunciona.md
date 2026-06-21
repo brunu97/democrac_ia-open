@@ -52,7 +52,10 @@ Atualmente, a aplicação realiza a sua inferência diretamente no **groqCloud**
 
 Todo o frontend é feito em **Angular**, não haveria nada de mal em utilizar o Flask diretamente com templates para fazer o site, mas Angular é mais fácil de gerir.
 
+> **Nota importante (atualização de 21 de junho de 2026):** na versão mais atual do site, os modelos passaram a ser o **GPT-OSS 120B** e o **Qwen 3.6**. Esta mudança deveu-se ao facto de os modelos anteriormente utilizados terem sido **descontinuados no Groq** !
+
 ---
+
 
 ### **A Extração de dados**
 
