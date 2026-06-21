@@ -165,6 +165,17 @@
     <!-- Resposta -->
     @if (estado.resposta && !estado.loading) {
       <div class="area-resposta">
+        <div class="acoes-resposta">
+          <button
+            mat-stroked-button
+            (click)="exportarResposta()"
+            [disabled]="exportandoResposta"
+            title="Descarregar esta resposta em PDF"
+          >
+            <mat-icon>{{ exportandoResposta ? 'hourglass_top' : 'picture_as_pdf' }}</mat-icon>
+            {{ exportandoResposta ? 'A gerar PDF...' : 'Descarregar PDF' }}
+          </button>
+        </div>
         <div class="pergunta-a-resposta">
           @if (estado.resposta.modo === ModoPesquisa.PESQUISA) {
             <p><b>🔍 Modo Pesquisa</b></p>

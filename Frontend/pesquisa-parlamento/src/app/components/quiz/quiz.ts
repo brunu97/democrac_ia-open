@@ -4,8 +4,8 @@ import { CommonModule } from '@angular/common';
 import { SharedImports } from '../../shared/imports';
 import { PesquisaService } from '../../services/pesquisa-service';
 import { BehaviorSubject } from 'rxjs';
-import { Meta, Title } from '@angular/platform-browser';
 import { QuizPergunta } from '../../models/models';
+import { SeoService } from '../../services/seo-service';
 
 interface Estado {
   loading: boolean;
@@ -32,19 +32,19 @@ export class Quiz implements OnInit, OnDestroy {
 
   constructor(
     private pesquisaService: PesquisaService,
-    private meta: Meta,
-    private title: Title,
     private destroyRef: DestroyRef,
+    seo: SeoService,
   ) {
-    this.title.setTitle('Quiz Parlamentar - Conheces os Deputados Portugueses? | Democrac_IA');
-    this.meta.updateTag({ name: 'description', content: 'Quiz interativo sobre política portuguesa: adivinha qual deputado disse esta frase no parlamento. Testa os teus conhecimentos sobre os deputados da Assembleia da República.' });
-    this.meta.updateTag({ property: 'og:title', content: 'Quiz Parlamentar - Conheces os Deputados Portugueses? | Democrac_IA' });
-    this.meta.updateTag({ property: 'og:description', content: 'Quiz interativo: adivinha qual deputado disse esta frase no parlamento português. Testa os teus conhecimentos sobre política portuguesa.' });
-    this.meta.updateTag({ property: 'og:url', content: 'https://www.democrac-ia.pt/quiz' });
-    this.meta.updateTag({ name: 'twitter:card', content: 'summary_large_image' });
-    this.meta.updateTag({ name: 'twitter:title', content: 'Quiz Parlamentar - Conheces os Deputados Portugueses? | Democrac_IA' });
-    this.meta.updateTag({ name: 'twitter:description', content: 'Adivinha qual deputado disse esta frase no parlamento. Testa os teus conhecimentos sobre política portuguesa.' });
-    this.meta.updateTag({ name: 'robots', content: 'index, follow' });
+    seo.update({
+      title: 'Quiz Parlamentar - Conheces os Deputados Portugueses? | Democrac_IA',
+      path: '/quiz',
+      description:
+        'Quiz interativo sobre política portuguesa: adivinha qual deputado disse esta frase no parlamento. Testa os teus conhecimentos sobre os deputados da Assembleia da República.',
+      ogDescription:
+        'Quiz interativo: adivinha qual deputado disse esta frase no parlamento português. Testa os teus conhecimentos sobre política portuguesa.',
+      twitterDescription:
+        'Adivinha qual deputado disse esta frase no parlamento. Testa os teus conhecimentos sobre política portuguesa.',
+    });
   }
 
   ngOnInit() {

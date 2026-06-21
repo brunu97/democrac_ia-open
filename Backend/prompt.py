@@ -1,5 +1,5 @@
 from datetime import datetime
-from config import MODEL_SIMPLES, MODEL_AVANCADO, MODEL_AVANCADO_3
+from config import MODEL_SIMPLES, MODEL_AVANCADO, MODEL_AVANCADO_2
 
 
 def get_prompt_config(modo="pesquisa"):
@@ -67,9 +67,16 @@ Tens que escrever em Português de Portugal
 
     system_prompt_pesquisa = f"""
 És um Assistente de Pesquisa Especializado no Arquivo da Assembleia da República.
-O teu objetivo é analisar transcrições de debates parlamentares e responder a perguntas de forma neutra e rigorosa.
+O teu objetivo é analisar transcrições de debates parlamentares e responder a perguntas de forma neutra, rigorosa e RESUMIDA.
 Tens que escrever em Português de Portugal
 Data atual: {data_hoje}
+
+## CONCISÃO (PRIORIDADE MÁXIMA)
+- Responde de forma curta e direta. Vai ao essencial.
+- Idealmente 1 a 3 parágrafos curtos. Só ultrapassa isto se a pergunta for genuinamente complexa.
+- Inclui apenas as intervenções mais relevantes — não enumeres tudo o que foi dito.
+- Usa no máximo 1 ou 2 citações diretas, só quando forem mesmo importantes.
+- Evita introduções, repetições e frases de enchimento. Não repitas a pergunta.
 
 ## DIRETRIZES DE RESPOSTA
 
@@ -98,10 +105,10 @@ Se Achares que um conjunto de informação não faz sentido, porque há texto co
 - Quando precisares de apresentar informação estruturada, usa listas com marcadores ou numeradas.
 - Usa Markdown para formatar a resposta, desde titulos, listas, citações, tudo.
 
-## ESTRUTURA DA RESPOSTA:
-- Resume a discussão principal.
-- Detalha as intervenções relevantes por orador, incluindo citações quando apropriado, com referências [FONTE X, pág. Y] se disponível.
-- Conclui com a data ou referência do documento se disponível.
+## ESTRUTURA DA RESPOSTA (mantém-na breve):
+- Começa por uma resposta direta e resumida à pergunta.
+- Menciona apenas as intervenções mais relevantes (1 a 2 oradores), com referência [FONTE X, pág. Y] quando disponível.
+- Não é obrigatório usar títulos nem listas se a resposta for curta; prefere prosa concisa.
 
 ## LIMITAÇÕES:
 - Não podes fornecer informações sobre eventos futuros ou debates que ainda não ocorreram.
@@ -347,12 +354,13 @@ Não mistures notícias nas citações. Se for necessário, faz mais do que uma 
 
 Não escrevas conclusão, frase de encerramento, nem "em suma". O resumo termina quando o último tema termina. A última secção termina como qualquer outra — sem despedida."""
 
-
-
     PROMPT_CONFIGS = {
         "pesquisa": {
             "system_prompt": system_prompt_pesquisa,
-            "temperature": 0.1,
+            "temperature": 1.0,
+            "top_p": 1.0,
+            "reasoning_effort": "low",
+            "reasoning_format": "parsed",
             "tokens": 5000,
             "k": 10,
             "modelo": MODEL_SIMPLES
@@ -365,26 +373,32 @@ Não escrevas conclusão, frase de encerramento, nem "em suma". O resumo termina
             "k": 15,
             "modelo": MODEL_AVANCADO
         },
-
+        
         "imaginativo": {
             "system_prompt": system_prompt_imaginativa,
             "temperature": 0.7,
-            "tokens": 8000,
+            "tokens": 6000,
             "k": 12,
-            "modelo": MODEL_SIMPLES
+            "modelo": MODEL_AVANCADO
         },
 
         "simples": {
             "system_prompt": None,
-            "temperature": None,
-            "tokens": None,
+            "temperature": 1.0,
+            "top_p": 1.0,
+            "reasoning_effort": "low",
+            "reasoning_format": "parsed",
+            "tokens": 4000,
             "k": 25,
             "modelo": MODEL_SIMPLES
         },
 
         "constituicao": {
             "system_prompt": system_prompt_constituicao,
-            "temperature": 0.1,
+            "temperature": 0.6,
+            "top_p": 1.0,
+            "reasoning_effort": "medium",
+            "reasoning_format": "parsed",
             "tokens": 7000,
             "k": 14,
             "modelo": MODEL_SIMPLES
@@ -392,10 +406,13 @@ Não escrevas conclusão, frase de encerramento, nem "em suma". O resumo termina
 
         "noticias": {
             "system_prompt": system_prompt_noticias,
-            "temperature": 0.1,
+            "temperature": 0.6,
+            "top_p": 1.0,
+            "reasoning_effort": "low",
+            "reasoning_format": "parsed",
             "tokens": 7000,
-            "modelo": MODEL_AVANCADO_3
-        }
+            "modelo": MODEL_AVANCADO_2
+        },
     }
 
     return PROMPT_CONFIGS[modo]

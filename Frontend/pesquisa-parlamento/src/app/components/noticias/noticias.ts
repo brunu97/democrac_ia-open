@@ -4,8 +4,9 @@ import { CommonModule } from '@angular/common';
 import { SharedImports } from '../../shared/imports';
 import { PesquisaService } from '../../services/pesquisa-service';
 import { BehaviorSubject } from 'rxjs';
-import { DomSanitizer, SafeHtml, Meta, Title } from '@angular/platform-browser';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { marked } from 'marked';
+import { SeoService } from '../../services/seo-service';
 
 interface Noticia {
   titulo: string;
@@ -42,22 +43,19 @@ export class Noticias implements OnInit, OnDestroy {
   constructor(
     private pesquisaService: PesquisaService,
     private sanitizer: DomSanitizer,
-    private meta: Meta,
-    private title: Title,
     private destroyRef: DestroyRef,
+    seo: SeoService,
   ) {
-    this.title.setTitle('Notícias de Política Portuguesa com IA | Democrac_IA');
-    this.meta.updateTag({
-      name: 'description',
-      content: 'Notícias de política portuguesa em tempo real com resumo gerado por Inteligência Artificial. Assembleia da República, governo e partidos. Atualizado a cada 2 horas.',
+    seo.update({
+      title: 'Notícias de Política Portuguesa com IA | Democrac_IA',
+      path: '/noticias',
+      description:
+        'Notícias de política portuguesa em tempo real com resumo gerado por Inteligência Artificial. Assembleia da República, governo e partidos. Atualizado a cada 2 horas.',
+      ogDescription:
+        'Notícias de política portuguesa em tempo real com resumo gerado por IA. Assembleia da República, governo e partidos. Atualizado a cada 2 horas.',
+      twitterDescription:
+        'Notícias de política portuguesa em tempo real com resumo por IA. Assembleia da República, governo e partidos. Atualizado de 2 em 2 horas.',
     });
-    this.meta.updateTag({ property: 'og:title', content: 'Notícias de Política Portuguesa com IA | Democrac_IA' });
-    this.meta.updateTag({ property: 'og:description', content: 'Notícias de política portuguesa em tempo real com resumo gerado por IA. Assembleia da República, governo e partidos. Atualizado a cada 2 horas.' });
-    this.meta.updateTag({ property: 'og:url', content: 'https://www.democrac-ia.pt/noticias' });
-    this.meta.updateTag({ name: 'twitter:card', content: 'summary_large_image' });
-    this.meta.updateTag({ name: 'twitter:title', content: 'Notícias de Política Portuguesa com IA | Democrac_IA' });
-    this.meta.updateTag({ name: 'twitter:description', content: 'Notícias de política portuguesa em tempo real com resumo por IA. Assembleia da República, governo e partidos. Atualizado de 2 em 2 horas.' });
-    this.meta.updateTag({ name: 'robots', content: 'index, follow' });
   }
 
   ngOnInit() {

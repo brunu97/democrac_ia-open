@@ -6,8 +6,8 @@ import { SharedImports } from '../../shared/imports';
 import { ExportarRequest, TabelaRequest } from '../../models/models';
 import { PesquisaService } from '../../services/pesquisa-service';
 import { ExportarService } from '../../services/exportar-service';
+import { SeoService } from '../../services/seo-service';
 import { BehaviorSubject } from 'rxjs';
-import { Meta, Title } from '@angular/platform-browser';
 import { SelecionadoPipe } from '../../selecionado.pipe';
 
 interface Estado {
@@ -54,27 +54,26 @@ export class Deputados implements OnInit, OnDestroy {
   constructor(
     private pesquisaService: PesquisaService,
     private exportarService: ExportarService,
-    private meta: Meta,
-    private title: Title,
+    private seo: SeoService,
     private route: ActivatedRoute,
     private router: Router,
     private cdr: ChangeDetectorRef,
     private destroyRef: DestroyRef,
   ) {
-    this.title.setTitle('Deputados da Assembleia da República - Intervenções Parlamentares | Democrac_IA');
-    this.meta.updateTag({
-      name: 'description',
-      content: 'Consulta as intervenções parlamentares de deputados da Assembleia da República Portuguesa desde 2006. Pesquisa o que cada deputado disse no parlamento.',
-    });
-    this.meta.updateTag({ property: 'og:title', content: 'Deputados da Assembleia da República - Intervenções Parlamentares | Democrac_IA' });
-    this.meta.updateTag({ property: 'og:description', content: 'Consulta as intervenções parlamentares de deputados da Assembleia da República Portuguesa desde 2006. Pesquisa o que cada deputado disse no parlamento.' });
-    this.meta.updateTag({ property: 'og:url', content: 'https://www.democrac-ia.pt/deputados' });
-    this.meta.updateTag({ name: 'twitter:card', content: 'summary_large_image' });
-    this.meta.updateTag({ name: 'twitter:title', content: 'Deputados da Assembleia da República | Democrac_IA' });
-    this.meta.updateTag({ name: 'twitter:description', content: 'Consulta as intervenções dos deputados da Assembleia da República desde 2006. Pesquisa o que cada deputado disse no parlamento.' });
-    this.meta.updateTag({ name: 'robots', content: 'index, follow' });
-
+    this.seoLista();
     this.carregarDeputados();
+  }
+
+  private seoLista() {
+    this.seo.update({
+      title: 'Deputados da Assembleia da República - Intervenções Parlamentares | Democrac_IA',
+      path: '/deputados',
+      description:
+        'Consulta as intervenções parlamentares de deputados da Assembleia da República Portuguesa desde 2006. Pesquisa o que cada deputado disse no parlamento.',
+      ogTitle: 'Deputados da Assembleia da República | Democrac_IA',
+      twitterDescription:
+        'Consulta as intervenções dos deputados da Assembleia da República desde 2006. Pesquisa o que cada deputado disse no parlamento.',
+    });
   }
 
   ngOnInit() {
@@ -89,6 +88,8 @@ export class Deputados implements OnInit, OnDestroy {
           } else {
             this.pendingId = id;
           }
+        } else {
+          this.seoLista();
         }
       });
   }
@@ -105,6 +106,14 @@ export class Deputados implements OnInit, OnDestroy {
     this.deputadoSelecionado = dep.nome;
     this.partidoSelecionado = dep.partido || '';
     this.filtroNome = dep;
+
+    const comPartido = dep.partido ? `${dep.nome} (${dep.partido})` : dep.nome;
+    this.seo.update({
+      title: `${comPartido} - Intervenções Parlamentares | Democrac_IA`,
+      path: `/deputados/${dep.id}`,
+      description: `Todas as intervenções de ${dep.nome}${dep.partido ? `, deputado(a) do ${dep.partido},` : ''} na Assembleia da República Portuguesa desde 2006. Pesquisa o que ${dep.nome} disse no parlamento.`,
+      ogTitle: `${comPartido} | Democrac_IA`,
+    });
 
     const qp = this.route.snapshot.queryParamMap;
     const offset = +(qp.get('offset') || '0');

@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, OnDestroy } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  DestroyRef,
+  OnDestroy,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { SharedImports } from '../../shared/imports';
@@ -9,11 +15,13 @@ import {
   TabelaRequest,
 } from '../../models/models';
 import { PesquisaService } from '../../services/pesquisa-service';
+import { ExportarService } from '../../services/exportar-service';
 import { MatChipListbox } from '@angular/material/chips';
 import { BehaviorSubject } from 'rxjs';
 import { MarkdownModule, MarkdownService } from 'ngx-markdown';
-import { Meta, Title } from '@angular/platform-browser';
 import { SelecionadoPipe } from '../../selecionado.pipe';
+import { SeoService } from '../../services/seo-service';
+import { RouterLink } from '@angular/router';
 
 interface Estado {
   loading: boolean;
@@ -26,7 +34,7 @@ interface Estado {
   selector: 'app-pesquisa',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, SharedImports, MarkdownModule],
+  imports: [CommonModule, SharedImports, MarkdownModule, RouterLink],
   providers: [MarkdownService],
   templateUrl: './pesquisa.html',
   styleUrl: './pesquisa.css',
@@ -55,25 +63,23 @@ export class Pesquisa implements OnDestroy {
   pagina_tamanho = 15;
   dadosTotais = 0;
 
+  exportandoResposta = false;
+
   constructor(
     private pesquisaService: PesquisaService,
-    private meta: Meta,
-    private title: Title,
+    private exportarService: ExportarService,
+    private cdr: ChangeDetectorRef,
     private destroyRef: DestroyRef,
+    seo: SeoService,
   ) {
-    this.title.setTitle('Democrac_IA - Pesquisa Debates da Assembleia da República com IA');
-    this.meta.updateTag({
-      name: 'description',
-      content: 'Pesquisa debates e intervenções da Assembleia da República Portuguesa com Inteligência Artificial. Analisa o que os deputados disseram sobre qualquer tema político.',
+    seo.update({
+      title: 'Democrac_IA - Pesquisa Debates da Assembleia da República com IA',
+      path: '/',
+      description:
+        'Pesquisa debates e intervenções da Assembleia da República Portuguesa com Inteligência Artificial. Analisa o que os deputados disseram sobre qualquer tema político.',
+      twitterDescription:
+        'Pesquisa debates e intervenções da Assembleia da República com IA. O que disseram os deputados sobre qualquer tema político.',
     });
-    this.meta.updateTag({ property: 'og:title', content: 'Democrac_IA - Pesquisa Debates da Assembleia da República com IA' });
-    this.meta.updateTag({ property: 'og:description', content: 'Pesquisa debates e intervenções da Assembleia da República Portuguesa com Inteligência Artificial. Analisa o que os deputados disseram sobre qualquer tema político.' });
-    this.meta.updateTag({ property: 'og:type', content: 'website' });
-    this.meta.updateTag({ property: 'og:url', content: 'https://www.democrac-ia.pt/' });
-    this.meta.updateTag({ name: 'twitter:card', content: 'summary_large_image' });
-    this.meta.updateTag({ name: 'twitter:title', content: 'Democrac_IA - Pesquisa Debates da Assembleia da República com IA' });
-    this.meta.updateTag({ name: 'twitter:description', content: 'Pesquisa debates e intervenções da Assembleia da República com IA. O que disseram os deputados sobre qualquer tema político.' });
-    this.meta.updateTag({ name: 'robots', content: 'index, follow' });
   }
 
   private atualizarEstado(parcial: Partial<Estado>) {
@@ -145,6 +151,20 @@ export class Pesquisa implements OnDestroy {
     const dataOriginal = semExtensao.split('_')[3];
     const [ano, mes, dia] = dataOriginal.split('-');
     return `${dia} ${mes} ${ano}`;
+  }
+
+  async exportarResposta() {
+    const resposta = this.estado$.value.resposta;
+    if (!resposta || this.exportandoResposta) return;
+    this.exportandoResposta = true;
+    try {
+      await this.exportarService.exportarRespostaPDF(resposta);
+    } catch {
+      this.atualizarEstado({ erro: 'Não foi possível gerar o PDF da resposta.' });
+    } finally {
+      this.exportandoResposta = false;
+      this.cdr.markForCheck();
+    }
   }
 
   selecionarModo(modo: string) {

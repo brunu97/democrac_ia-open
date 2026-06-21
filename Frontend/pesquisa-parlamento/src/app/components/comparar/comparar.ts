@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, OnDestroy, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
-import { Meta, Title } from '@angular/platform-browser';
 import { BehaviorSubject } from 'rxjs';
 import { SharedImports } from '../../shared/imports';
 import { PesquisaService } from '../../services/pesquisa-service';
+import { SeoService } from '../../services/seo-service';
 import { CompararResultado, DeputadoLista, DeputadoStats } from '../../models/models';
 
 interface Estado {
@@ -39,20 +39,18 @@ export class Comparar implements OnInit, OnDestroy {
 
   constructor(
     private pesquisaService: PesquisaService,
-    private meta: Meta,
-    private title: Title,
     private cdr: ChangeDetectorRef,
     private destroyRef: DestroyRef,
+    seo: SeoService,
   ) {
-    this.title.setTitle('Comparar Deputados - Estatísticas Parlamentares | Democrac_IA');
-    this.meta.updateTag({ name: 'description', content: 'Compara estatísticas de intervenções de qualquer par de deputados da Assembleia da República.' });
-    this.meta.updateTag({ property: 'og:title', content: 'Comparar Deputados | Democrac_IA' });
-    this.meta.updateTag({ property: 'og:description', content: 'Compara lado a lado deputados do parlamento português.' });
-    this.meta.updateTag({ property: 'og:url', content: 'https://www.democrac-ia.pt/comparar' });
-    this.meta.updateTag({ name: 'twitter:card', content: 'summary_large_image' });
-    this.meta.updateTag({ name: 'twitter:title', content: 'Comparar Deputados | Democrac_IA' });
-    this.meta.updateTag({ name: 'twitter:description', content: 'Compara lado a lado deputados do parlamento português.' });
-    this.meta.updateTag({ name: 'robots', content: 'index, follow' });
+    seo.update({
+      title: 'Comparar Deputados - Estatísticas Parlamentares | Democrac_IA',
+      path: '/comparar',
+      description:
+        'Compara estatísticas de intervenções de qualquer par de deputados da Assembleia da República.',
+      ogTitle: 'Comparar Deputados | Democrac_IA',
+      ogDescription: 'Compara lado a lado deputados do parlamento português.',
+    });
   }
 
   ngOnInit() {

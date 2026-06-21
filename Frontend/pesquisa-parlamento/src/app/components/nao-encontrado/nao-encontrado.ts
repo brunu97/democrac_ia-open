@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatAnchor } from "@angular/material/button";
-import { Meta, Title } from '@angular/platform-browser';
+import { SeoService } from '../../services/seo-service';
 
 @Component({
   selector: 'app-nao-encontrado',
@@ -10,9 +10,11 @@ import { Meta, Title } from '@angular/platform-browser';
   styleUrl: './nao-encontrado.css',
 })
 export class NaoEncontrado {
-  constructor(private router: Router, private meta: Meta, private title: Title) {
-    this.title.setTitle('Democrac_IA - Página Não Encontrada');
-    this.meta.updateTag({ name: 'robots', content: 'noindex, nofollow' });
+  constructor(private router: Router, seo: SeoService) {
+    seo.update({
+      title: 'Democrac_IA - Página Não Encontrada',
+      index: false,
+    });
   }
 
   voltar() {
