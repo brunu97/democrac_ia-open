@@ -40,6 +40,8 @@ Pergunta → Embedding → FAISS Search → Fontes relevantes → LLM + RAG → 
 3. LLM analisa as fontes e gera resposta contextualizada
 4. Apresenta resposta + links para documentos originais
 
+Para mais informação, consulta [Como Funciona](ComoFunciona/comoFunciona.md).
+
 # Instalação
 
 ### Backend
