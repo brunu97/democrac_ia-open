@@ -1,5 +1,6 @@
 # O que é?
-[www.democrac-ia.pt](https://www.democrac-ia.pt)
+
+![Democrac_IA](screenshot.png)
 
 
 O Democrac_IA permite pesquisar e analisar debates parlamentares portugueses usando inteligência artificial. Consultar intervenções de deputados, analisar discussões políticas e explore a Constituição da República.
@@ -25,6 +26,8 @@ O Democrac_IA permite pesquisar e analisar debates parlamentares portugueses usa
 - **Volume**: ~2000 PDFs processados
 - **Processamento via pytorch**: ROCm e CUDA
 
+
+[www.democrac-ia.pt](https://www.democrac-ia.pt)
 
 # Como funciona?
 
