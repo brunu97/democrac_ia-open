@@ -27,7 +27,7 @@ O Democrac_IA permite pesquisar e analisar debates parlamentares portugueses usa
 - **Processamento via pytorch**: ROCm e CUDA
 
 
-[www.democrac-ia.pt](https://www.democrac-ia.pt)
+[www.democrac-ia.pt](https://www.democrac-ia.pt) (Offline)
 
 # Como funciona?
 
